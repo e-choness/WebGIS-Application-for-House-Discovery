@@ -1,0 +1,139 @@
+<div class="layui-fluid">
+  <div class="layui-row">
+    <div class="layui-col-sm12">
+      <div class="layui-card">
+        <div class="layui-card-header">模型计算结果</div>
+        <div
+          class="layui-form layui-card-header layuiadmin-card-header-auto"
+          lay-filter="layadmin-model-formlist"
+        >
+          <div class="layui-form-item">
+            <div class="layui-inline">
+              <label for="" class="layui-form-label">分区：</label>
+              <div class="layui-input-block">
+                <select name="ZoneSelect" id="ZoneSelect">
+                  <option value="Whole" selected="selected">Whole</option>
+                  <option value="A">A</option>
+                  <option value="B">B</option>
+                  <option value="C">C</option>
+                  <option value="D">D</option>
+                  <option value="E">E</option>
+                  <option value="F">F</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="layui-inline">
+              <label for="" class="layui-form-label">对象：</label>
+              <div class="layui-input-block">
+                <select name="ObjSelect" id="ObjSelect">
+                  <option value="Stream" selected="selected">Stream</option>
+                  <option value="Land">Land</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="layui-inline">
+              <label for="" class="layui-form-label">2D/3D：</label>
+              <div class="layui-input-block">
+                <select name="styleSelect" id="styleSelect">
+                  <option value="3D" selected="selected">3D</option>
+                  <option value="2D">2D</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="layui-inline">
+              <label for="" class="layui-form-label">指标：</label>
+              <div class="layui-input-block">
+                <select name="waterQualitySelect" id="waterQualitySelect">
+                  <option value="COD">COD</option>
+                  <option value="NH4">NH4</option>
+                  <option value="TN">TN</option>
+                  <option value="TP" selected="selected">TP</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="layui-inline">
+              <button
+                class="layui-btn layuiadmin-btn-useradmin"
+                lay-submit
+                lay-filter="LAY-index-filter"
+              >
+                <i
+                  class="layui-icon layui-icon-search layuiadmin-button-btn"
+                ></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="layui-card-body">
+          <div id="Map_ShaheDiv"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  #Map_ShaheDiv {
+    padding: 80;
+    margin: 0;
+    min-height: 650px;
+    width: 100%;
+  }
+</style>
+
+<script>
+  layui.use(['model', 'table', 'layer'], function() {
+    var form = layui.form
+
+    var index = layer.load(2, { time: 5 * 1000 }) //又换了种风格，并且设定最长等待10秒
+    //关闭
+    var { model } = layui.model
+
+    var colors = ['blue', 'Aqua', 'Purple']
+    var chartMap = echarts.init(
+      document.getElementById('Map_ShaheDiv'),
+      null,
+      {}
+    )
+
+    var datas_map = new Array()
+    var lines
+    var MainStreamPoint
+    var InnerPoint
+
+    model(chartMap, 'Shahe_Stream', 'S', '3D', 'Whole', 'TP')
+    form.render(null, 'layadmin-model-formlist')
+
+    window.addEventListener('resize', function() {
+      chartMap.resize()
+    })
+
+    form.on('submit(LAY-index-filter)', function(data) {
+      var index = layer.load(2, { time: 5 * 1000 })
+      var field = data.field
+      var map = 'Shahe_Stream'
+      var objSelect
+      var waterQuality
+      console.log(field)
+      var { ObjSelect, styleSelect, ZoneSelect, waterQualitySelect } = field
+
+      ObjSelect === 'Stream' ? (objSelect = 'S') : (objSelect = 'L')
+
+      model(
+        chartMap,
+        map,
+        objSelect,
+        styleSelect,
+        ZoneSelect,
+        waterQualitySelect
+      )
+
+      form.render(null, 'layadmin-model-formlist')
+    })
+  })
+</script>

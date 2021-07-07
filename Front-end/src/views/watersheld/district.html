@@ -1,0 +1,21 @@
+
+<div id="Map_DistrictDiv">
+</div>
+
+<style>
+  #Map_DistrictDiv {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+  }
+</style>
+
+<script>
+  layui.use(['arcgis', 'district'], function() {
+    var {Map, GeoJSONLayer, SceneView, BasemapToggle} = layui.arcgis;
+    var {district} = layui.district;
+
+    district("Map_DistrictDiv", Map, GeoJSONLayer, SceneView, BasemapToggle)
+  })
+</script>

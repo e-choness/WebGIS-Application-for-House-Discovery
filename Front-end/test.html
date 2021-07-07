@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Hello, World</title>
+  <style type="text/css">
+    html {
+      height: 100%
+    }
+
+    body {
+      height: 100%;
+      margin: 0px;
+      padding: 0px
+    }
+
+    #container {
+      height: 100%
+    }
+  </style>
+  <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=kIFCcgVqIHDdqrtTWWOIIDtwxgCcQPpT">
+//v2.0版本的引用方式：src="http://api.map.baidu.com/api?v=2.0&ak=您的密钥"
+  </script>
+</head>
+
+<body>
+  <div id="container"></div>
+  <script type="text/javascript">
+
+    var timeInterval = 100;
+    var flag = false;
+    var search_range = 1000;
+
+    // keywords
+    var keywords_en = ["bus", "shop", "school", "subway", "work", "hospital"];
+    var keywords = ["公交车站", "商场", "学校", "地铁站", "写字楼", "医院"];
+
+    var map = new BMap.Map("container");
+    // create BMap instance
+    var point = new BMap.Point(121.48941, 31.40527);
+    // center the point
+    map.centerAndZoom(point, 15);
+    // Initialize the map
+    map.enableScrollWheelZoom(true);
+    var myGeo = new BMap.Geocoder();
+    var house_data = {
+      street: '南京西路',
+      community: '丽都新贵'
+    }
+    myGeo.getPoint(house_data.community, function (point) {
+        if (point) {
+          // 如果查到坐标，开始检索周围信息
+          console.log(house_data.community, point)
+          SearchStart(point, house_data);
+        } else {
+          // 如果街道没查搭配，再用小区去查坐标
+          myGeo.getPoint(house_data.street, function (repoint) {
+            if (repoint) {
+              // 如果查到坐标，开始检索周围信息
+              SearchStart(repoint, house_data)
+              console.log(house_data.street, point)
+            } else {
+              // setTimeout(function () {
+              //   console.log("Error: no address of " + " id: " + data.id + " community: " + data.community + " street: " + data.street);
+               //   // 如果还没查到坐标，继续查询下一个房屋，延迟timeInterval秒
+              //   GetDataFromServer();
+              // }, timeInterval);
+            }
+          }, "上海市");
+        }
+      }, "上海市");
+
+    
+
+      
+    function SearchStart(point, house_data) {
+        // 先在地图上标记出来
+        map.centerAndZoom(point, 16);
+        map.addOverlay(new BMap.Marker(point));
+
+        // 首先查询此房屋的第一个关键词信息（公交车站，idx＝0）
+        setTimeout(function () {
+          console.log('search house ', house_data, ' index:', keywords_en[0])
+          SearchNearby(point, house_data, 0);
+        }, timeInterval);
+      }
+
+    function SearchNearby(house_loc, house_data, keyword_idx) {
+        var nearby_info = [];
+        // 清除地图覆盖物
+        map.clearOverlays();
+        var local = new BMap.LocalSearch(map, {
+          renderOptions: { map: map, autoViewport: false },
+          pageCapacity: 50,
+          onSearchComplete: function (results) {
+            // DisplayClear();
+            if (local.getStatus() == BMAP_STATUS_SUCCESS) {
+              // 百度地图成功返回，将每个周边信息储存到nearby_info里
+              console.log('search success! ')
+              for (var i = 0; i < results.getCurrentNumPois(); i++) {
+                var locate = results.getPoi(i);
+                var distance
+                if (locate != null) {
+                  // 查询结果与房屋的距离
+                  distance = parseFloat(map.getDistance(locate.point, house_loc)).toFixed(1);
+                  nearby_info.push(locate.title + "/" + locate.point.lng + '/' + locate.point.lat + '/' + distance);
+                  // DisplayNearbyData(nearby_info, locate, distance)
+                }
+                // console.log(i, locate)
+              }
+              // 获得百度地图查询结果后立即发送给服务器
+              console.log('nearby_info_0', nearby_info)
+              return nearby_info;
+              // return sendData(keywords_en[keyword_idx], nearby_info, house_data, house_loc, keyword_idx)
+            } else {
+              // GetDataFromServer();
+              console.log("No records with baiduAPI:", local.getStatus());
+              return false;
+            }
+          }
+        });
+        local.searchNearby(keywords[keyword_idx], house_loc, search_range);
+      }
+  
+    function sendData(nearby_type, nearby_info, house_data, house_loc, idx) {
+        data = "nearby_type=" + nearby_type + "&nearby_info=" + nearby_info + "&id=" + house_data.id + "&lat=" + house_loc.lat + "&lng=" + house_loc.lng;
+        $.ajax({
+          type: "POST",
+          url: post_data_url,
+          data: data,
+          dataType: "JSON",
+          success: function (data) {
+            if (flag) {
+              console.log("warning", 'pause');
+            } else {
+              // 当查询到最后一个kewords时，请求服务器获得下一个房屋信息
+              if (idx == keywords.length - 1) {
+                GetDataFromServer();
+              } else {
+                // 查询此房屋的下一个关键词信息
+                setTimeout(function () {
+                  SearchNearby(house_loc, house_data, idx + 1);
+                }, timeInterval);
+              }
+              console.log("success", data);
+            }
+            return true;
+          },
+          error: function () {
+            alert('error in post');
+            return false;
+          },
+          timeout: function () {
+            alert('time out in post');
+            return false;
+          }
+        });
+      }
+  
+  </script>
+</body>
+
+</html>

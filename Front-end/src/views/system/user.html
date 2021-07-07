@@ -1,0 +1,241 @@
+<script>
+  (function () {
+    console.log("firstpage");
+    if (window.sessionStorage) {
+      if (!sessionStorage.getItem("firstLoad")) {
+        sessionStorage["firstLoad"] = true;
+        window.location.reload();
+      } ;
+    }
+  })();
+</script>
+
+
+<title>用户管理</title>
+
+<div class="layui-card layadmin-header">
+  <div class="layui-breadcrumb" lay-filter="breadcrumb">
+    <a lay-href="">主页</a>
+    <a><cite>系统</cite></a>
+    <a><cite>用户管理</cite></a>
+  </div>
+</div>
+
+<div class="layui-fluid">
+  <div class="layui-card">
+    <div
+      class="layui-form layui-card-header layuiadmin-card-header-auto"
+      lay-filter="app-content-list"
+    >
+      <div class="layui-form-item">
+        <div class="layui-inline">
+          <label class="layui-form-label">用户ID</label>
+          <div class="layui-input-inline">
+            <input
+              type="text"
+              name="id"
+              placeholder="请输入"
+              autocomplete="off"
+              class="layui-input"
+            />
+          </div>
+        </div>
+        <div class="layui-inline">
+          <label class="layui-form-label">用户名</label>
+          <div class="layui-input-inline">
+            <input
+              type="text"
+              name="user_name"
+              placeholder="请输入"
+              autocomplete="off"
+              class="layui-input"
+            />
+          </div>
+        </div>
+        <div class="layui-inline">
+          <label class="layui-form-label">性别</label>
+          <div class="layui-input-inline">
+            <select name="gender">
+              <option value="">请选择性别</option>
+              <option value="0">男</option>
+              <option value="1">女</option>
+            </select>
+          </div>
+        </div>
+        <div class="layui-inline">
+          <button
+            class="layui-btn layuiadmin-btn-user1"
+            lay-submit
+            lay-filter="LAY-app-userlist-search"
+          >
+            <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="layui-card-body">
+      <script
+        type="text/html"
+        template
+        lay-done="layui.sessionData.activeListener(d)"
+      >
+        {{#
+          var permission = layui.sessionData(layui.setter.tableName)[layui.setter.request.permission];
+        }}
+
+        <div style="padding-bottom: 10px;" class="card-test ">
+          <button id="add123" class="layui-btn layuiadmin-btn-user {{permission.indexOf('user:add') == -1 ? 'layui-btn-disabled' : '' }}"
+            data-type="add">添加</button>
+          <button class="layui-btn layuiadmin-btn-user {{permission.indexOf('user:delete') == -1 ? 'layui-btn-disabled' : '' }}" data-type="batchdel">删除</button>
+        </div>
+      </script>
+
+      <table
+        id="LAY-app-content-list"
+        lay-filter="LAY-app-content-list"
+      ></table>
+      <script type="text/html" id="buttonTpl">
+        {{#  if(d.status){ }}
+        <button class="layui-btn layui-btn-xs">已启用</button>
+        {{#  } else { }}
+        <button class="layui-btn layui-btn-primary layui-btn-xs">待启用</button>
+        {{#  } }}
+      </script>
+      <script type="text/html" id="table-content-list">
+        {{#
+          var permission = layui.sessionData(layui.setter.tableName)[layui.setter.request.permission];
+        }}
+        <a class="layui-btn layui-btn-normal layui-btn-xs {{permission.indexOf('user:edit') == -1 ? 'layui-btn-disabled' : '' }}" lay-event="edit"><i
+            class="layui-icon layui-icon-edit"></i>编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs {{permission.indexOf('user:delete') == -1 ? 'layui-btn-disabled' : '' }}" lay-event="del"><i
+            class="layui-icon layui-icon-delete"></i>删除</a>
+      </script>
+    </div>
+  </div>
+</div>
+
+<script>
+  layui.sessionData.activeListener = (d) => {
+    layui
+      .use("userlist", layui.factory("userlist"))
+      .use(["admin", "userlist", "table"], function () {
+        var $ = layui.$,
+          admin = layui.admin,
+          view = layui.view,
+          table = layui.table,
+          form = layui.form;
+
+        form.render(null, "app-content-list");
+
+        //监听搜索
+        form.on("submit(LAY-app-userlist-search)", function (data) {
+          var field = data.field;
+          console.log(field);
+          //执行重载
+          admin.req({
+            type: "GET",
+            url: "http://36.7.72.89:8102/user",
+            success: function (res) {
+              console.log(res);
+            },
+          });
+          table.reload("LAY-app-content-list", {
+            where: field,
+          });
+        });
+
+        var active = {
+          batchdel: function () {
+            var checkStatus = table.checkStatus("LAY-app-content-list"),
+              checkData = checkStatus.data; //得到选中的数据
+
+            if (checkData.length === 0) {
+              return layer.msg("请选择数据");
+            }
+
+            layer.confirm("确定删除吗？", function (index) {
+              //执行 Ajax 后重载
+              /*
+              admin.req({
+                url: 'xxx'
+                //,……
+              });
+              */
+              admin.req({
+                type: "DELETE",
+                contentType: "application/json; charset=utf-8",
+                url: "http://36.7.72.89:8102/user/",
+                data: JSON.stringify(checkData),
+                success: function (res) {
+                  console.log(res);
+                  table.reload("LAY-app-content-list");
+                  layer.msg("已删除");
+                },
+              });
+
+              table.reload("LAY-app-content-list");
+              layer.msg("已删除");
+            });
+          },
+
+          //添加
+          add: function (obj) {
+            admin.popup({
+              title: "添加用户",
+              area: ["550px", "550px"],
+              id: "LAY-popup-content-add",
+              success: function (layero, index) {
+                view(this.id)
+                  .render("app/content/userform")
+                  .done(function () {
+                    form.render(null, "layuiadmin-app-form-list");
+
+                    //监听提交
+                    form.on("submit(layuiadmin-app-form-submit)", function (
+                      data
+                    ) {
+                      var field = data.field; //获取提交的字段
+                      // console.log(field);
+                      //提交 Ajax 成功后，关闭当前弹层并重载表格
+                      //$.ajax({});
+                      console.log(field);
+                      var mr = [];
+                      var data = {};
+                      Object.keys(field).forEach((i) => {
+                        if (i.indexOf("roles") != -1) {
+                          const id = parseInt(i.split("-")[2]);
+                          mr.push(id);
+                        } else {
+                          data[i] = field[i];
+                        }
+                      });
+                      data.roles = mr;
+                      console.log(data);
+                      admin.req({
+                        type: "POST",
+                        url: "http://36.7.72.89:8102/user",
+                        data: data,
+                        success: function (res) {
+                          console.log(res);
+                          table.reload("LAY-app-content-list"); //重载表格
+                          layer.close(index); //执行关闭
+                        },
+                      });
+                    });
+                  });
+              },
+            });
+          },
+        };
+
+        $(".layuiadmin-btn-user").on("click", function () {
+          console.log($(this).data("type"));
+          let res = this.getAttribute("class").split(" ");
+          if (res.indexOf("layui-btn-disabled") !== -1) return;
+          var type = $(this).data("type");
+          active[type] ? active[type].call(this) : "";
+        });
+      });
+  };
+</script>

@@ -1,0 +1,748 @@
+<title>南岸碧桂园</title>
+
+<style>
+  /* .layadmin-pagetabs .layui-tab-title li {
+    line-height: 50px;
+  }
+
+  .esri-popup__main-container {
+    width: 600px !important;
+    height: 800px !important;
+  } */
+
+  .lbd p cite {
+    font-style: normal;
+    font-size: 16px;
+    font-weight: 300;
+    color: #009688;
+  }
+
+  #latest_data p, #latest_data h3{
+    display: inline;
+  }
+  /* 重置轮播样式 */
+  .layadmin-carousel #LAY-index-dataview+.layui-carousel-ind {
+      position: absolute;
+      top: 0px;
+      text-align: right;
+  }
+
+  #station-laydate-range-datetime {
+    min-width: 250px;
+  }
+
+  .station_itemed {
+    background-color: #009688
+  }
+
+  #Map_BiGuiYuanStreamDiv {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+  }
+
+  #StationPopup {
+    position: absolute;
+    z-index: 999;
+    top: 120px;
+    left: 40px;
+    min-width: 600px;
+    min-height: 500px;
+    border: 1px solid red;
+    background-color: #e2e2e2;
+    opacity: 0.9;
+    visibility: hidden;
+  }
+
+  #display_controll {
+    position: absolute;
+    z-index: 999;
+    bottom: 60px;
+    right: 40px;
+    width: 150px;
+    height: 100px;
+    border: 1px solid red;
+  }
+
+  #display_controll li {
+    border: 1px solid green;
+    margin: 2px;
+  }
+
+  #display_controll li a {
+    display: block;
+    background-color: #39c;
+  }
+
+  #display_controll li a:hover {
+    background-color: #efc;
+  }
+
+  #LAY-station-dataview {
+    height: 100%;
+  }
+</style>
+
+<div id="biguiyuanOpt">
+  <div
+    class="layui-form layui-card-header layuiadmin-card-header-auto"
+    lay-filter="layadmin-biguiyuann-formlist"
+  >
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label for="" class="layui-form-label">显示：</label>
+        <div class="layui-input-block">
+          <select name="objSelect" id="objSelect">
+            <option value="WS_J" selected="selected">污水检查井</option>
+            <option value="WS_J_PGP">污水检查井_物探</option>
+            <option value="WS_C">污水管网</option>
+            <option value="WS_C_GP">污水管网_物探</option>
+            <option value="YS_J">雨水检查井</option>
+            <option value="YS_J_PGP">雨水检查井_物探</option>
+            <option value="YS_C">雨水管网</option>
+            <option value="YS_C_GP">雨水管网_物探</option>
+            <option value="Whole">Whole</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="layui-inline">
+        <button
+          class="layui-btn layuiadmin-btn-useradmin"
+          lay-submit
+          lay-filter="LAY-index-filter"
+        >
+          <i class="layui-icon layui-icon-release layuiadmin-button-btn"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="Map_BiGuiYuanStreamDiv">
+  <div id="StationPopup">
+    <div class="layui-tab layui-tab-brief" lay-filter="StationPopup">
+      <ul class="layui-tab-title">
+        <li class="layui-this" lay-id="latest_data">House Info</li>
+        <li lay-id="historical_data">Historical Price</li>
+        <li lay-id="model_result">Model Prediction</li>
+        <li lay-id="auth">Reviews</li>
+      </ul>
+      <div class="layui-tab-content" style="min-height: 100px;min-width: 400px;">
+        <div class="layui-tab-item layui-show">
+          <div class="layui-row">
+            <div class="layui-card">
+              <div class="layui-card-body">
+                <span>站点ID</span>
+                <span id="Index"></span> <br />
+                <span>站点名称</span>
+                <span id="Name"></span> <br />
+              </div>
+            </div>
+          </div>
+          <div class="layui-row">
+            <div class="layui-card">
+              <div class="layui-card-body">
+
+                <div class="layui-carousel layadmin-carousel layadmin-backlog" style="height: 280px">
+                  <div carousel-item>
+                    <ul class="layui-row layui-col-space10" id="latest_data">
+                      <li class="layui-col-xs6 station_itemed" code="rj_flow">
+                        <a
+                          href="javascript:;"
+                          class="lbd"
+                        >
+                          <h3>瞬时流量</h3>
+                          <p><cite>0.01 m³/s</cite></p>
+                        </a>
+                      </li>
+                      <li class="layui-col-xs6" code="rj_speed">
+                        <a
+                          href="javascript:;"
+                          class="lbd"
+                        >
+                          <h3>流速</h3>
+                          <p><cite>0.0 m/s</cite></p>
+                        </a>
+                      </li>
+                      <li class="layui-col-xs6" code="voltage">
+                        <a href="javascript:;" class="lbd">
+                          <h3>电压</h3>
+                          <p><cite style="color: #FF5722;">10.74 v</cite></p>
+                        </a>
+                      </li>
+                      <li class="layui-col-xs6" code="level">
+                        <a
+                          href="javascript:;"
+                          onclick="layer.tips('不跳转', this, {tips: 3});"
+                          class="lbd"
+                        >
+                          <h3>液位</h3>
+                          <p><cite>261.22 mm</cite></p>
+                        </a>
+                      </li>
+
+                      <li class="layui-col-xs6" code="level">
+                        <a href="javascript:;", class="lbd">
+                          <h3>液位</h3>
+                          <p><cite>261.22 mm</cite></p>
+                        </a>
+                      </li>
+
+                      <li class="layui-col-xs6" code="voltage">
+                        <a href="javascript:;" class="lbd">
+                          <h3>电压</h3>
+                          <p><cite style="color: #FF5722;">10.74 v</cite></p>
+                        </a>
+                      </li>
+
+
+                      <li class="layui-col-xs6" code="voltage">
+                        <a href="javascript:;" class="lbd">
+                          <h3>电压</h3>
+                          <p><cite style="color: #FF5722;">10.74 v</cite></p>
+                        </a>
+                      </li>
+
+                      <li class="layui-col-xs6" code="voltage">
+                        <a href="javascript:;" class="lbd">
+                          <h3>电压</h3>
+                          <p><cite style="color: #FF5722;">10.74 v</cite></p>
+                        </a>
+                      </li>
+
+                      <li class="layui-col-xs6" code="voltage">
+                        <a href="javascript:;" class="lbd">
+                          <h3>电压</h3>
+                          <p><cite style="color: #FF5722;">10.74 v</cite></p>
+                        </a>
+                      </li>
+
+                      <li class="layui-col-xs6" code="voltage">
+                        <a href="javascript:;" class="lbd">
+                          <h3>电压</h3>
+                          <p><cite style="color: #FF5722;">10.74 v</cite></p>
+                        </a>
+                      </li>
+                    </ul>
+
+                    <!-- <ul class="layui-row layui-col-space10">
+                      <li class="layui-col-xs6">
+                        <a lay-href="template/goodslist" class="lbd">
+                          <h3>间隔</h3>
+                          <p><cite>5 min</cite></p>
+                        </a>
+                      </li>
+                    </ul> -->
+
+                  </div>
+                </div>
+
+                <div class="layui-form" style="" lay-filter="station-biguiyuann-formlist">
+                  <div class="layui-form-item">
+                    <div class="layui-inline">
+                      <label class="layui-form-label" style="text-align: left">历史数据</label>
+                      <div class="layui-input-inline" style="margin-left: -30px;min-width: 290px;">
+                        <input type="text" class="layui-input" id="station-laydate-range-datetime" name='date_range'>
+                      </div>
+                    </div>
+                    <div class="layui-inline" style="margin-left: 0px">
+                      <button class="layui-btn" lay-submit lay-filter="station-history-submit">查询</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="layadmin-dataview" data-anim="fade" lay-filter="LAY-station-dataview">
+                  <div id="LAY-station-dataview">
+                    <div></div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="layui-tab-item">
+          <div class="layui-row">
+            <div class="layui-card">
+              <div class="layui-card-body">
+                <div class="layui-carousel layadmin-carousel layadmin-dataview" data-anim="fade" lay-filter="LAY-index-dataview">
+                  <div carousel-item id="LAY-index-dataview">
+                    <div>
+                      <i class="layui-icon layui-icon-loading1 layadmin-loading"></i>
+                    </div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="layui-tab-item">
+          <div id="model_result">3</div>
+        </div>
+        <div class="layui-tab-item">
+          <div id="auth">4</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+</div>
+
+  <script>
+    // layui.use('carousel_utils', layui.factory('carousel_utils'))
+    layui.use(
+      ['stream_3d', 'laydate', 'layer_utils_0', 'arcgis', 'mqttClient', 'optionEcharts', 'carousel_utils', 'echarts_utils', 'element', 'table', 'layer', 'jquery', 'admin',],
+      function() {
+        var element = layui.element
+        var form = layui.form
+        var laydate = layui.laydate
+        var $ = layui.jquery
+        var {init_carousel_text, init_carousel_echarts} = layui.carousel_utils
+        var {init_echarts} = layui.echarts_utils
+        var { stream_3d, parseFeature } = layui.stream_3d
+        var { points_layer } = layui.layer_utils_0
+        var {lineOption} = layui.optionEcharts
+        var admin = layui.admin
+        var mqttClient = layui.mqttClient
+        var {Graphic} = layui.arcgis
+        init_carousel_text()
+        // init_carousel_echarts(data)
+        form.render(null, 'layadmin-biguiyuann-formlist')
+        form.render(null, 'station-biguiyuann-formlist')
+        
+        element.render('StationPopup')
+        //日期时间范围
+        var curr = new Date();
+        laydate.render({
+          elem: '#station-laydate-range-datetime',
+          type: 'datetime', 
+          value: curr,
+          range: '~',
+        });
+        element.on('tab(StationPopup)', function(data) {
+          var tabID = this.getAttribute('lay-id')
+          console.log(tabID, data)
+          var id = $('#StationPopup #Index').text()
+          console.log(id)
+          if (id.length > 0) {
+            if (tabID == 'latest_data') {
+              var container = $('#latest_data')
+              console.log('click latest_data', container)
+              
+            }
+            else if(tabID == 'historical_data'){
+              console.log('click historical_data')
+              admin.req({
+                url: './json/biguiyuan/historyData.js', 
+                type: 'GET', 
+                data: {}, 
+                success: function (res) { //这里要说明一下：done 是只有 response 的 code 正常才会执行。而 succese 则是只要 http 为 200 就会执行
+                  // console.log(res);
+                  var options = []
+                  var option
+                  for(var i = 0; i < res.data.length; i++){
+                    option = lineOption(res.data[i])
+                    // console.log('option', option)
+                    options.push(option)
+                  }
+                  // console.log(options)
+                  init_carousel_echarts(options)
+                }
+              });
+
+              // var postData = {
+              //   "code": "rj_flow",
+              //   "endTime": "2021-02-02",
+              //   "measurement": "44335",
+              //   "startTime": "2021-02-01"
+              // }
+
+              admin.req({
+                // url: 'http://8.136.11.164:8080/api/v1/station',
+                // type: 'POST',
+                // data: postData,
+                // type: 'json',
+                url: 'http://36.7.72.89:8002/api/v1/biguiyuanNanWeatherMonitoring/list',
+                type: 'GET',
+                success: function (res) { //这里要说明一下：done 是只有 response 的 code 正常才会执行。而 succese 则是只要 http 为 200 就会执行
+                  console.log(res);
+                }
+              });
+
+            }
+          }
+        })
+
+        var { basemap, baseview, graphicsLayer } = stream_3d(
+          'Map_BiGuiYuanStreamDiv'
+        )
+
+        // var {graphicsLayer} = layers
+
+        var station_display = station_point => {
+          $('#stations').click(event => {
+            // event.preventDefault()
+            var target = event.target
+            var id = $(target).attr('id')
+            console.log(target, id)
+            // alert(target.innerHTML)
+            console.log(station_point.visible)
+            station_point.visible = !station_point.visible
+          })
+        }
+
+        $('#latest_data li a').click((e) => {
+          var li = $(e.target).parents('li')
+          var title = li.attr('code')
+
+          var getClass = li.attr('class');
+          console.log(title, getClass)
+          if (getClass == 'layui-col-xs6 station_itemed') {
+            li.removeClass('station_itemed')
+          } else if (getClass == 'layui-col-xs6') {
+            li.siblings('li').removeClass('station_itemed')
+            li.addClass('station_itemed')
+          }
+        })
+
+        var station_popup_callback = (obj, callback) => {
+          var {
+            MSOutletNode,
+            WaterQualityDeviceID,
+            WaterQuantityDeviceID
+          } = obj
+          console.log('station popup callback----', obj)
+
+          form.on('submit(station-history-submit)', function (data) {
+            var {date_range} = data.field
+            var dates = date_range.split("~")
+            var startTime = dates[0].trim()
+            var endTime = dates[1].trim()
+            console.log('check history: ', date_range, startTime, endTime)
+            var postData = {
+              "code": MSOutletNode,
+              "endTime": endTime,
+              "measurement": "44335",
+              "startTime": startTime
+            }
+
+            admin.req({
+              url: 'http://127.0.0.1:7001/model',
+              type: 'POST',
+              data: JSON.stringify(postData),
+              dataType: 'json',
+              contentType: "application/json",
+              success: function (res) { //这里要说明一下：done 是只有 response 的 code 正常才会执行。而 succese 则是只要 http 为 200 就会执行
+                console.log(res);
+                var options = []
+                var option
+                for (var i = 0; i < res.data.length; i++) {
+                  option = lineOption(res.data[i])
+                  // console.log('option', option)
+                  options.push(option)
+                }
+                // var instance = init_echarts('#LAY-station-dataview', option)
+                // var op = instance.getOption()
+                // op.title.text = title
+                // instance.clear();
+                // instance.setOption(op)
+              }
+            });
+          
+          })
+
+          admin.req({
+            url: './json/biguiyuan/historyData.js',
+            type: 'GET',
+            data: {},
+            success: function (res) { //这里要说明一下：done 是只有 response 的 code 正常才会执行。而 succese 则是只要 http 为 200 就会执行
+              // console.log(res);
+              var options = []
+              var option
+              for (var i = 0; i < res.data.length; i++) {
+                option = lineOption(res.data[i])
+                // console.log('option', option)
+                options.push(option)
+              }
+              var instance = init_echarts('#LAY-station-dataview', option)
+              // var op = instance.getOption()
+              // op.title.text = title
+              // instance.clear();
+              // instance.setOption(op)
+            }
+          });
+
+          var list = $('#latest_data').children('li')
+          console.log('list ', list.length)
+          var pointer = 0
+          mqttClient.on('message', function (topic, message) {
+            var value = message.toString()
+            // console.log(topic);
+            // console.log(value);
+            // 
+            
+            if (WaterQuantityDeviceID.length > 2 && topic == WaterQuantityDeviceID){
+              var res = JSON.parse(value)
+              // console.log('water quality res length: ', res.length)
+              for (var i = 0; i < res.length; i++) {
+                // console.log(i, list[i])
+                var child = list[i].children[0].children
+                list[i].setAttribute("code", res[i]["code"]);
+                // console.log(child)
+                child[0].innerHTML = res[i]["name"]
+                child[1].children[0].innerHTML = res[i]["value"] + ' ' + res[i]["unit"]
+                // console.log('wq: ', child[1].children[0].innerHTML)
+              }
+              pointer = res.length
+            }
+
+            if (WaterQualityDeviceID.length > 2 && topic == WaterQualityDeviceID) {
+              var res = JSON.parse(value)
+              // console.log('water quantity res length: ', res.length)
+              for (var i = 0; i < res.length; i++) {
+                var child = list[i + pointer].children[0].children
+                list[i + pointer].setAttribute("code", res[i]["code"]);
+                // console.log(child)
+                child[0].innerHTML = res[i]["name"]
+                child[1].children[0].innerHTML = res[i]["value"] + ' ' + res[i]["unit"]
+                // console.log('wqa: ', child[1].children[0].innerHTML)
+              }
+              // pointer = 0
+            }
+          })
+          element.render('StationPopup')
+
+          if (callback instanceof Function) {
+            callback()
+            element.render('StationPopup')
+          }
+        }
+
+        // var point_url = 'json/chaohu/biguiyuan.geojson'
+        // var geojsonLayer_point = points_layer(
+        //   basemap,
+        //   baseview,
+        //   point_url,
+        //   station_display,
+        //   'StationPopup',
+        //   station_popup_callback
+        // )
+        // console.log(geojsonLayer_point)
+
+        var point_url = 'json/chaohu/biguiyuan.geojson'
+        points_layer(
+          basemap,
+          baseview,
+          point_url,
+          station_display,
+          'StationPopup',
+          station_popup_callback
+        )
+
+        //物探数据1：2016新版污水管网.dwg
+        const Biguiyuan_WS_Junctions_JsonUrl =
+          'json/biguiyuan/BiguiyuanNan_WS_Junctions_3D_V2.json'
+        const Biguiyuan_WS_Conduits_JsonUrl =
+          'json/biguiyuan/BiguiyuanNan_WS_Conduits_3D_V3.json'
+        //物探数据1：2016新版雨水管网.dwg
+        const Biguiyuan_YS_Junctions_JsonUrl =
+          'json/biguiyuan/BiguiyuanNan_YS_Junctions_3D_V3.json'
+        const Biguiyuan_YS_Conduits_JsonUrl =
+          'json/biguiyuan/BiguiyuanNan_YS_Conduits_3D_V3.json'
+        //物探数据2：碧桂园片区排水管线图.dwg
+        const Biguiyuan_WS_Junctions_P_GP_JsonUrl =
+          'json/biguiyuan/BiguiyuanNan_WS_Junctions_GP_V1_North.json'
+        const Biguiyuan_WS_Conduits_GP_JsonUrl =
+          'json/biguiyuan/BiguiyuanNan_WS_Conduits_GP_V11_North.json'
+        const Biguiyuan_YS_Junctions_P_GP_JsonUrl =
+          'json/biguiyuan/BiguiyuanNan_YS_Junctions_GP_V1_North.json'
+        const Biguiyuan_YS_Conduits_GP_JsonUrl =
+          'json/biguiyuan/BiguiyuanNan_YS_Conduits_GP_V11_North.json'
+
+        var show_status = {
+          WS_J: false,
+          WS_J_PGP: false,
+          WS_C: false,
+          WS_C_GP: false,
+          YS_J: false,
+          YS_J_PGP: false,
+          YS_C: false,
+          YS_C_GP: false
+          // Whole: false
+        }
+
+        
+        form.on('submit(LAY-index-filter)', function(data) {
+          var field = data.field
+          var objSelect
+          console.log(field)
+          var { objSelect, styleSelect } = field
+
+          // var parseCallback = (layer)=>{
+          //   console.log('parseCallback  ',layer, basemap.allLayers)
+          //   basemap.add(layer)
+          //   console.log('added ', basemap.allLayers)
+          // }
+
+          const graphicsLayer = basemap.allLayers.find(function (layer) {
+            return layer.title === objSelect
+          })
+
+          switch (objSelect) {
+            case 'WS_J':
+              if (show_status[objSelect] == false) {
+                var wsj_layer = parseFeature(
+                  Biguiyuan_WS_Junctions_JsonUrl,
+                  graphicsLayer
+                )
+                console.log(wsj_layer)
+                show_status[objSelect] = true
+              }
+              break
+            case 'WS_J_PGP':
+              if (show_status[objSelect] == false) {
+                parseFeature(
+                  Biguiyuan_WS_Junctions_P_GP_JsonUrl,
+                  graphicsLayer
+                )
+                show_status[objSelect] = true
+              }
+              break
+            case 'WS_C':
+              if (show_status[objSelect] == false) {
+                parseFeature(
+                  Biguiyuan_WS_Conduits_JsonUrl,
+                  graphicsLayer
+                )
+                show_status[objSelect] = true
+              }
+              break
+            case 'WS_C_GP':
+              if (show_status[objSelect] == false) {
+                parseFeature(
+                  Biguiyuan_WS_Conduits_GP_JsonUrl,
+                  graphicsLayer
+                )
+                show_status[objSelect] = true
+              }
+              break
+            case 'YS_J':
+              if (show_status[objSelect] == false) {
+                parseFeature(
+                  Biguiyuan_YS_Junctions_JsonUrl,
+                  graphicsLayer
+                )
+                show_status[objSelect] = true
+              }
+              break
+            case 'YS_J_PGP':
+              if (show_status[objSelect] == false) {
+                parseFeature(
+                  Biguiyuan_YS_Junctions_P_GP_JsonUrl,
+                  graphicsLayer
+                )
+                show_status[objSelect] = true
+              }
+              break
+            case 'YS_C':
+              if (show_status[objSelect] == false) {
+                parseFeature(
+                  Biguiyuan_YS_Conduits_JsonUrl,
+                  graphicsLayer
+                )
+                show_status[objSelect] = true
+              }
+              break
+            case 'YS_C_GP':
+              if (show_status[objSelect] == false) {
+                parseFeature(
+                  Biguiyuan_YS_Conduits_GP_JsonUrl,
+                  graphicsLayer
+                )
+                show_status[objSelect] = true
+              }
+              break
+            case 'Whole':
+              if (show_status['WS_J'] == false) {
+                parseFeature(
+                  Biguiyuan_WS_Junctions_JsonUrl,
+                  graphicsLayer
+                )
+                show_status['WS_J'] = true
+              }
+
+              if (show_status['WS_J_PGP'] == false) {
+                parseFeature(
+                  Biguiyuan_WS_Junctions_P_GP_JsonUrl,
+                  graphicsLayer
+                )
+                show_status['WS_J_PGP'] = true
+              }
+
+              if (show_status['WS_C'] == false) {
+                parseFeature(
+                  Biguiyuan_WS_Conduits_JsonUrl,
+                  graphicsLayer
+                )
+                show_status['WS_C'] = true
+              }
+
+              if (show_status['WS_C_GP'] == false) {
+                parseFeature(
+                  Biguiyuan_WS_Conduits_GP_JsonUrl,
+                  graphicsLayer
+                )
+                show_status['WS_C_GP'] = true
+              }
+
+              if (show_status['YS_J'] == false) {
+                parseFeature(
+                  Biguiyuan_YS_Junctions_JsonUrl,
+                  graphicsLayer
+                )
+                show_status['YS_J'] = true
+              }
+
+              if (show_status['YS_J_PGP'] == false) {
+                parseFeature(
+                  Biguiyuan_YS_Junctions_P_GP_JsonUrl,
+                  graphicsLayer
+                )
+                show_status['YS_J_PGP'] = true
+              }
+
+              if (show_status['YS_C'] == false) {
+                parseFeature(
+                  Biguiyuan_YS_Conduits_JsonUrl,
+                  graphicsLayer
+                )
+                show_status['YS_C'] = true
+              }
+
+              if (show_status['YS_C_GP'] == false) {
+                parseFeature(
+                  Biguiyuan_YS_Conduits_GP_JsonUrl,
+                  graphicsLayer
+                )
+                show_status['YS_C_GP'] = true
+              }
+              break
+            default:
+              break
+          }
+          form.render(null, 'layadmin-biguiyuann-formlist')
+        })
+      }
+    )
+
+
+    
+  </script>
+</div>

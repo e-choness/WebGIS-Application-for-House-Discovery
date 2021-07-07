@@ -1,0 +1,30 @@
+<div id="mapDiv">
+</div>
+
+<style>
+  html,
+  body,
+  #mapDiv {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+  }
+
+  body {
+    background-color: #FFF;
+    overflow: hidden;
+    font-family: "Trebuchet MS";
+  }
+</style>
+
+
+<script>
+  layui.use(['arcgis', 'location'], function() {
+    var {Map, GeoJSONLayer, SceneView, BasemapToggle, Search} = layui.arcgis;
+    var {location} = layui.location;
+    console.log(location)
+    location("mapDiv", Map, GeoJSONLayer, SceneView, BasemapToggle, Search);
+
+  })
+</script>

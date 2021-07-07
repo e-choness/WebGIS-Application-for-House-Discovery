@@ -1,0 +1,23 @@
+<div id="Map_ShaheTerrainDiv">
+</div>
+
+<style>
+  #Map_ShaheTerrainDiv {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+  }
+</style>
+
+
+
+<script>
+  layui.use(['terrain', 'arcgis'],function() {
+    var {Map, GeoJSONLayer, SceneView, BasemapToggle} = layui.arcgis;
+    var {terrain} = layui.terrain;
+
+    terrain("Map_ShaheTerrainDiv", Map, GeoJSONLayer, SceneView, BasemapToggle)
+  })
+  
+</script>

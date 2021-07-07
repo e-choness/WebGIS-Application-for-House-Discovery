@@ -1,0 +1,1257 @@
+<title>南岸碧桂园</title>
+
+<style>
+
+  #biguiyuanOpt{
+    position: absolute;
+    bottom: 40px;
+    right: 24px;
+    height: 31px;
+    z-index: 10;
+  }
+
+  .water_table {
+    text-align: center;
+    margin-bottom: 5px;
+  }
+
+  #station-laydate-range-datetime {
+    min-width: 250px;
+  }
+
+  .station_itemed, .layui-table-hover {
+    background-color: #009688;
+    color: #fff;
+  }
+
+  #Map_BiGuiYuanStreamDiv {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+  }
+
+  #LAY-station-dataview {
+    height: 100%;
+  }
+
+  #chartBox {
+    height: 80%;
+    /* width: 70%; */
+    background-color: rgb(250, 250, 250);
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    right: 15px;
+    display: 'none';
+    opacity: 0.9;
+    box-shadow: 0px 0px 10px 10px rgb(0, 174, 255);
+    z-index: 50;
+  }
+
+  #chartBox .hisChart_class {
+    height: 45%;
+    width: 90%;
+    margin-left: 5%;
+    margin-right: 5%;
+    text-align: center;
+
+    bottom: 15px;
+    position: absolute;
+    display: 'none';
+  }
+
+  #chartBoxL {
+    height: 65%;
+    width: 95%;
+    background-color: rgb(250, 250, 250);
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    right: 15px;
+    display: 'none';
+    opacity: 0.9;
+    box-shadow: 0px 0px 10px 10px rgb(0, 174, 255);
+    z-index: 50;
+  }
+
+  #chartBoxL .layui-row{
+    height: 100%;
+    width: 95%;
+    margin: 0 auto;
+    padding: 0 auto;
+    position: absolute;
+  }
+
+ #chartBoxL .layui-col-sm9{
+    height: 80%;
+    width: 74%;
+    /* border: 1px solid rgb(0, 174, 255); */
+    right: 0;
+    position: absolute;
+  }  
+
+  #chartBoxL .layui-col-sm3{
+    height: 80%;
+    width: 25%;
+    /* border: 1px solid gold; */
+    padding-left: 5%;
+    position: absolute;
+  }  
+
+  #chartBoxL .comChart {
+    height: 95%;
+    width: 95%;
+    /* margin-left: 5%;
+    margin-right: 5%; */
+    text-align: center;
+    bottom: 15px;
+    position: absolute;
+    display: 'none';
+  }
+
+   /* #chartBoxL .indicator{
+      height: 80%;
+      width: 15%;
+      text-align: center;
+      right: 0px;
+      position: absolute;
+      display: 'none';
+   } */
+
+  .testChart_class {
+    height: 400px;
+    width: 600px;
+    bottom: 15px;
+    background-color: aquamarine;
+    position: absolute;
+
+  }
+
+</style>
+
+<div id="biguiyuanOpt">
+  <div class="layui-form" lay-filter="layadmin-biguiyuann-formlist">
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <select name="objSelect" id="objSelect" style="max-width: 70px;">
+          <option value="WS_J" selected="selected">污水检查井</option>
+          <option value="WS_J_PGP">污水检查井_物探</option>
+          <option value="WS_C">污水管网</option>
+          <option value="WS_C_GP">污水管网_物探</option>
+          <option value="YS_J">雨水检查井</option>
+          <option value="YS_J_PGP">雨水检查井_物探</option>
+          <option value="YS_C">雨水管网</option>
+          <option value="YS_C_GP">雨水管网_物探</option>
+        </select>
+      </div>
+      <div class="layui-inline">
+        <button class="layui-btn layuiadmin-btn-useradmin" style="padding: 0 8px; font-size: 14px; background-color: #aaa;" lay-submit lay-filter="LAY-index-filter">加载</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div id="Map_BiGuiYuanStreamDiv">
+</div>
+
+<div id="chartBox" style="display:none">
+  <img id='closeIcon' align="right" src="src/style/res/close-circle.svg" width="25" height="25" />
+  <div class="layui-col-sm12">
+    <div class="layui-card">
+      <!-- <div class="layui-card-header">点位数据结果</div> -->
+      <div id="" class="layui-card-body">
+        <div class="layui-row layui-col-space10">
+          <div class="layui-col-md6">
+            <h3 class="water_table">实时水量</h3>
+            <div class="grid-demo grid-demo-bg1">
+              <table id="WaterQuantity"></table>
+            </div>
+          </div>
+          <div class="layui-col-md6">
+            <h3 class="water_table">实时水质</h3>
+            <div class="grid-demo">
+              <table id="WaterQuality" lay-filter="WaterQuality"></table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="layui-form" style="margin-top: 200px;" lay-filter="station-biguiyuann-formlist">
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label class="layui-form-label" style="text-align: left">历史数据</label>
+        <div class="layui-input-inline" style="margin-left: -30px;min-width: 290px;">
+          <input type="text" class="layui-input" id="station-laydate-range-datetime" name='date_range'>
+        </div>
+      </div>
+      <div class="layui-inline" style="margin-left: 0px">
+        <button class="layui-btn" lay-submit lay-filter="station-history-submit">查询</button>
+      </div>
+    </div>
+  </div>
+  <div id="hisChart" class="hisChart_class"></div>
+</div>
+
+<div id="chartBoxL" style="display: none;">
+  <img id='closeIconL' align="right" src="src/style/res/close-circle.svg" width="25" height="25" />
+  <div class="layui-form" style="margin-top: 10px;" lay-filter="common-biguiyuann-formlist">
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label class="layui-form-label" style="text-align: left">模型数据</label>
+        <div class="layui-input-inline" style="margin-left: -30px;min-width: 290px;">
+          <input type="text" class="layui-input" id="common-laydate-range-datetime" name='date_range'>
+        </div>
+      </div>
+      <div class="layui-inline" style="margin-left: 0px">
+        <button class="layui-btn" lay-submit lay-filter="common-history-submit">查询</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="layui-row">
+    <div class="layui-col-sm3">
+      <table id="indicator" lay-filter="indicator"></table>
+    </div>
+    <div class="layui-col-sm9">
+      <div id="comChart" class="comChart"></div>
+    </div>
+  </div>
+
+</div>
+
+
+<script>
+  var region = "biguiyuannan"
+  layui.use(
+    ['biguiyuann', 'laydate', 'table', 'layer', 'arcgis', 'mqttClient','optionChaohu', 'splitData',  'element', 'table', 'layer', 'jquery', 'admin',],
+    function () {
+      var element = layui.element
+      var form = layui.form
+      var laydate = layui.laydate
+      var table = layui.table
+      var layer = layui.layer
+      var $ = layui.jquery
+      var {valueMax, DateDiff, splitData, unitMapper, nameMapper, splitLinkData, splitSubcatchmentData, splitHisDataSL, splitHisDataSZ, splitWeatherData } = layui.splitData
+      var { render_layer, parseFeature } = layui.biguiyuann
+      var { optionChart, optionChartHisSL, optionChartHisSZ } = layui.optionChaohu
+      var admin = layui.admin
+      var mqttClient = layui.mqttClient
+      var { Graphic } = layui.arcgis
+
+      console.log('echarts version: ', echarts.version)
+
+      form.render(null, 'layadmin-biguiyuann-formlist')
+      form.render(null, 'station-biguiyuann-formlist')
+
+      //日期时间范围
+      var curr = new Date();
+      laydate.render({
+        elem: '#station-laydate-range-datetime',
+        type: 'datetime',
+        value: curr,
+        range: '~',
+        
+        max: 1,
+      });
+
+      laydate.render({
+        elem: '#common-laydate-range-datetime',
+        type: 'datetime',
+        value: curr,
+        range: '~',
+        
+        max: 1,
+      });
+
+      //水量表
+      table.render({
+        elem: '#WaterQuantity',
+        title: '实时水量',
+        height: 180,
+        cols: [
+          [
+            //表头
+            { field: 'name', title: '指标名', width: 90, fixed: 'left', sort: true },
+            { field: 'value', title: '值', width: 90 },
+            { field: 'unit', title: '单位', width: 90 },
+            { field: 'time', title: '更新时间', width: 90, },
+            {
+              field: 'id',
+              title: '水量指标',
+              width: 100,
+            },
+          ]
+        ],
+        data: [] 
+      })
+      //水质表
+      table.render({
+        elem: '#WaterQuality',
+        title: '实时水质',
+        height: 180,
+        cols: [
+          [
+             //表头
+            { field: 'name', title: '指标名', width: 90, fixed: 'left', sort: true },
+            { field: 'value', title: '值', width: 90 },
+            { field: 'unit', title: '单位', width: 90 },
+            { field: 'time', title: '更新时间', width: 90, },
+            {
+              field: 'id',
+              title: '水质指标',
+              width: 100,
+            },
+          ]
+        ],
+        data: [] 
+      })     
+
+      Number.prototype.countDecimals = function () {
+        if (Math.floor(this.valueOf()) === this.valueOf()) return 0;
+        return this.toString().split(".")[1].length || 0;
+      }
+      function valueMax(tupleArray){
+        var max = 0.0000;
+        var tmp;
+        // console.log(tupleArray)
+        if(tupleArray instanceof Array){
+          for(var i = 0; i < tupleArray.length; i++) {
+            tmp = parseFloat(tupleArray[i][1])
+            if(max < tmp) max = tmp
+          }
+          if(max > 1) max = Math.floor(max + max / 3)
+          else {
+            max = 2 * max
+            max = max.toFixed(2)
+          }
+          console.log('max ', max)
+          return max
+        }
+        else return 'not tupleArray'
+      }
+      
+      $('#closeIconL').click(() => {
+        document.getElementById('chartBoxL').style.display = 'none'
+      })
+
+      function popup_callback_wrapper(splitData, optionChart, type='NodeChart'){
+        var FIndex
+        var weaterURL = '00_Weather'
+        var popup_callback = (obj, callback) => {
+          document.getElementById('chartBoxL').style.display = 'block'
+          var plot = echarts.init(document.getElementById('comChart'), null, {})
+          table.render({
+            elem: '#indicator',
+            height: 300,
+            width: 200,
+            cols: [
+              [
+                //表头
+                { field: 'name', title: '指标名', width: 90, fixed: 'left', sort: true },
+                { field: 'unit', title: '单位', width: 90 },
+              ]
+            ],
+            data: [
+              {
+                "name": "COD",
+                "unit": "mg/L"
+              },
+              {
+                "name": "NH4",
+                "unit": "mg/L"
+              },
+              {
+                "name": "TSS",
+                "unit": "mg/L"
+              },
+              {
+                "name": "TN",
+                "unit": "mg/L"
+              },
+              {
+                "name": "TP",
+                "unit": "mg/L"
+              },
+            ]
+          })
+          
+          plot.clear()
+          if(type=='NodeChart'){
+            FIndex = obj.MSOutletNode
+            if (FIndex == undefined || FIndex == " ") {
+              FIndex = obj.MSName;
+            }
+            if (FIndex == undefined || FIndex == " ") {
+              FIndex = obj.Name;
+            }
+          }
+          else {
+            FIndex = obj.MSName
+            if (FIndex == undefined || FIndex == " ") {
+              FIndex = obj.NAME;
+            }
+            if (FIndex == undefined || FIndex == " ") {
+              FIndex = obj.Name;
+            }
+          }
+
+          console.log('FIndex ', FIndex, 'Obj: ', obj);
+          form.on('submit(common-history-submit)', function (data) {
+            var { date_range } = data.field
+            var dates = date_range.split("~")
+            var startTime = dates[0].trim()
+            var endTime = dates[1].trim()
+            var diff = DateDiff(startTime, endTime)
+            console.log('check history: ', diff, startTime, endTime)
+            if (diff > 14) {
+              layer.open({
+                title: '日期错误',
+                content: '日期超出范围，查询时间范围为14天'
+              });
+              return;
+            }
+            var postModel = {
+              "code": FIndex,
+              "endTime": endTime,
+              "region": region,
+              "startTime": startTime,
+            }
+            var postWeather = {
+              "code": weaterURL,
+              "endTime": endTime,
+              "region": region,
+              "startTime": startTime,
+            }
+            var weatherData
+            var modelInfo
+            admin.req({
+              url: 'http://36.7.72.89:8015/api/v1/model',
+              async: false,
+              type: 'POST',
+              data: JSON.stringify(postWeather),
+              dataType: 'json',
+              contentType: "application/json",
+              success: function (res) {
+                var resData = res.data
+                if (res.data.length === 0) {
+                  layer.open({
+                    title: '日期错误',
+                    content: '模型历史数据不存在'
+                  });
+                  return;
+                }
+                console.log('res: ', JSON.parse(res.data));
+                weatherData = splitWeatherData(JSON.parse(res.data))
+                console.log('splitWeatherData: ', weatherData)
+              }
+            })
+
+            admin.req({
+              url: 'http://36.7.72.89:8015/api/v1/model',
+              async: false,
+              type: 'POST',
+              data: JSON.stringify(postModel),
+              dataType: 'json',
+              contentType: "application/json",
+              success: function (res) {
+                var resData = res.data
+
+                console.log('res: ', JSON.parse(res.data));
+                modelInfo = splitData(JSON.parse(res.data))
+                console.log('splitData: ', modelInfo)
+              }
+            })
+
+            var modelData 
+            if (type == 'NodeChart') {
+              modelData = {
+                "flow": modelInfo.Inflow,
+                "depth": modelInfo.Depth
+              }
+            }
+            else if (type == 'LinkChart'){
+              modelData = {
+                "flow": modelInfo.Flow,
+                "depth": modelInfo.Depth
+              }
+            }
+            else if (type == 'SubcatchmentChart'){
+              modelData = {
+                "flow": modelInfo.Runoff
+              }
+            }
+            
+            option = optionChart({
+              type: 'COD',
+              qualityMax: valueMax(modelInfo.COD)
+            }, {
+              FIndex, modelData
+            })
+            if(modelInfo){
+            option.series[2].data = modelInfo.COD
+          }
+            option.series[1].data = weatherData.rainfall
+            
+            option.yAxis[0].max = valueMax(weatherData.rainfall)
+            option.yAxis[1].max = valueMax(modelData.flow)
+            console.log('option: ', option)
+            plot.setOption(option, true)
+
+            table.on('row(indicator)', function (obj) {
+              // console.log(obj.tr) //得到当前行元素对象
+              console.log(obj.data) //得到当前行数据
+              var {name} = obj.data
+              //obj.del(); //删除当前行
+              //obj.update(fields) //修改当前行数据
+              if(name == 'COD'){
+                option = optionChart({
+                  type: 'COD',
+                  qualityMax: valueMax(modelInfo.COD)
+                }, {
+                  FIndex, modelData
+                })
+                if(modelInfo){
+            option.series[2].data = modelInfo.COD
+          }
+                option.series[1].data = weatherData.rainfall
+
+                option.yAxis[0].max = valueMax(weatherData.rainfall)
+                option.yAxis[1].max = valueMax(modelData.flow)
+                plot.setOption(option, true)
+              }else if(name == 'TSS') {
+                option = optionChart({
+                  type: 'TSS',
+                  qualityMax: valueMax(modelInfo.TSS)
+                }, {
+                  FIndex, modelData
+                })
+                option.series[2].data = modelInfo.TSS
+                option.series[1].data = weatherData.rainfall
+
+                option.yAxis[0].max = valueMax(weatherData.rainfall)
+                option.yAxis[1].max = valueMax(modelData.flow)
+                plot.setOption(option, true)
+              }else if(name == 'TP'){
+                option = optionChart({
+                  type: 'TP',
+                  qualityMax: valueMax(modelInfo.TP)
+                }, {
+                  FIndex, modelData
+                })
+                option.series[2].data = modelInfo.TP
+                option.series[1].data = weatherData.rainfall
+
+                option.yAxis[0].max = valueMax(weatherData.rainfall)
+                option.yAxis[1].max = valueMax(modelData.flow)
+                plot.setOption(option, true)
+              } else if (name == 'TN') {
+                option = optionChart({
+                  type: 'TN',
+                  qualityMax: valueMax(modelInfo.TN)
+                }, {
+                  FIndex, modelData
+                })
+                option.series[2].data = modelInfo.TN
+                option.series[1].data = weatherData.rainfall
+
+                option.yAxis[0].max = valueMax(weatherData.rainfall)
+                option.yAxis[1].max = valueMax(modelData.flow)
+                plot.setOption(option, true)
+              } else if (name == 'NH4') {
+                option = optionChart({
+                  type: 'NH4',
+                  qualityMax: valueMax(modelInfo.NH4)
+                }, {
+                  FIndex, modelData
+                })
+                option.series[2].data = modelInfo.NH4
+                option.series[1].data = weatherData.rainfall
+
+                option.yAxis[0].max = valueMax(weatherData.rainfall)
+                option.yAxis[1].max = valueMax(modelData.flow)
+                plot.setOption(option, true)
+              }
+            })
+          
+          })
+        }
+        return popup_callback
+      }
+
+      var node_popup_callback = popup_callback_wrapper(splitData, optionChart)
+      var link_popup_callback = popup_callback_wrapper(splitLinkData, optionChart, type="LinkChart")
+      var subcatch_popup_callback = popup_callback_wrapper(splitSubcatchmentData, optionChart, type="SubcatchmentChart")
+
+      var FIndex,
+        WaterQualityDeviceID,
+        WaterQuantityDeviceID,
+        WaterQualityType,
+        WaterQuantityType
+      var weaterURL = '00_Weather'
+      var station_popup_callback = (obj, callback) => { 
+        document.getElementById('chartBox').style.display = 'block'
+        //水量表
+        table.render({
+          elem: '#WaterQuantity',
+          title: '实时水量',
+          height: 180,
+          cols: [
+            [
+              //表头
+              { field: 'name', title: '指标名', width: 90, fixed: 'left', sort: true },
+              { field: 'value', title: '值', width: 90 },
+              { field: 'unit', title: '单位', width: 90 },
+              { field: 'time', title: '更新时间', width: 90, },
+              {
+                field: 'id',
+                title: '水量指标',
+                width: 100,
+              },
+            ]
+          ],
+          data: [
+            {
+              "name": "瞬时流量",
+              "unit": "m3/s",
+              "value": 0
+            },
+            {
+              "name": "液位",
+              "unit": "mm",
+              "value": 0
+            },
+            {
+              "name": "流速",
+              "unit": "m/s",
+              "value": 0
+            },
+          ]
+        })
+        table.render({
+          elem: '#WaterQuality',
+          title: '实时水质',
+          height: 180,
+          cols: [
+            [
+              //表头
+              { field: 'name', title: '指标名', width: 150, fixed: 'left', sort: true },
+              { field: 'value', title: '值', width: 90 },
+              { field: 'unit', title: '单位', width: 90 },
+              { field: 'time', title: '更新时间', width: 90, },
+              {
+                field: 'id',
+                title: '水质指标',
+                width: 100,
+              },
+            ]
+          ],
+          data: [
+            {
+              "name": "COD",
+              "value": 0,
+              "unit": "mg/L",
+            },
+            {
+              "name": "TSS",
+              "value": 0,
+              "unit": "mg/L",
+            },
+          ]
+        })
+
+        var plot = echarts.init(document.getElementById('hisChart'), null, {})
+        plot.clear()
+
+        FIndex = obj.MSOutletNode
+        if (FIndex == undefined || FIndex == " ") {
+          FIndex = obj.MSName;
+        }
+        if (FIndex == undefined || FIndex == " ") {
+          FIndex = obj.Name;
+        }
+        WaterQualityDeviceID = obj.WaterQualityDeviceID
+        WaterQuantityDeviceID = obj.WaterQuantityDeviceID
+        WaterQualityType = obj.WaterQualityType
+        WaterQuantityType = obj.WaterQuantityType
+
+        console.log('station popup callback----', obj)
+
+        mqttClient.subscribe(WaterQuantityDeviceID, function (err) {
+          if (!err) {
+            console.log('subscribe success! ' + WaterQuantityDeviceID)
+          }
+        })
+        mqttClient.subscribe(WaterQualityDeviceID, function (err) {
+          if (!err) {
+            console.log('subscribe success! ' + WaterQualityDeviceID)
+          }
+        })
+
+        function parseStationValue(value, filter = ['rj_voltage', 'rj_diff', 't651_FF14', 't651_FF15', 't651_FF11']){
+          var data = []
+          var res = JSON.parse(value)
+          // console.log(res)
+          var data = []
+          for (var i = 0; i < res.length; i++) {
+            if(filter.indexOf(res[i]["code"]) < 0) {
+              data.push({
+                'id': res[i]["code"],
+                'name': res[i]["name"],
+                'time': res[i]["time"].split(' ')[1],
+                'value': res[i]["value"],
+                'unit': res[i]["unit"]
+              }
+            )}
+          }
+          // console.log(data)
+          return data
+        }
+
+        
+        mqttClient.on('message', function (topic, message) {
+          var value = message.toString()
+          console.log('topic', topic, 'sl',WaterQuantityDeviceID, 'sz',WaterQualityDeviceID);
+          // console.log(value);
+          // 
+          if (topic == WaterQuantityDeviceID) {
+            var data = parseStationValue(value)
+            // console.log('sl mqtt data: ', data)
+            // console.log('topic', topic, 'sl', WaterQuantityDeviceID, data);
+            // console.log('SL', WaterQuantityType, WaterQuantityDeviceID)
+            //水量表
+            table.render({
+              elem: '#WaterQuantity',
+              height: 180,
+              cols: [
+                [
+                  //表头
+                  { field: 'name', title: '指标名', width: 90, fixed: 'left', sort: true },
+                  { field: 'value', title: '值', width: 90 },
+                  { field: 'unit', title: '单位', width: 90 },
+                  { field: 'time', title: '更新时间', width: 90,  },
+                  {
+                    field: 'id',
+                    title: '水量指标',
+                    width: 100,
+                  },
+                ]
+              ],
+              data: data
+            })
+            
+          }
+
+          else if (topic == WaterQualityDeviceID) {
+            var data = parseStationValue(value)
+            // console.log('sz mqtt data: ', data)
+            console.log('topic', topic, 'sz', WaterQualityDeviceID, data);
+            //固定水质表
+            table.render({
+              elem: '#WaterQuality',
+              height: 180,
+              cols: [
+                [
+                   //表头
+                  { field: 'name', title: '指标名', width: 150, fixed: 'left', sort: true },
+                  { field: 'value', title: '值', width: 90 },
+                  { field: 'unit', title: '单位', width: 90 },
+                  { field: 'time', title: '更新时间', width: 90, },
+                  {
+                    field: 'id',
+                    title: '水质指标',
+                    width: 100,
+                  },
+                ]
+              ],
+              data: data
+            })
+          }
+        })
+
+        form.on('submit(station-history-submit)', function (data) {
+          var { date_range } = data.field
+          var dates = date_range.split("~")
+          var startTime = dates[0].trim()
+          var endTime = dates[1].trim()
+          var diff = DateDiff(startTime, endTime)
+          console.log('check history: ', diff, startTime, endTime)
+          if(diff > 14){
+            layer.open({
+              title: '日期错误',
+              content: '日期超出范围，查询时间范围为14天'
+            });  
+            return;  
+          }
+          var postModel = {
+            "code": FIndex,
+            "endTime": endTime,
+            "region": region,
+            "startTime": startTime
+          }
+
+          var postStation_sz = {
+            "type": "WaterQuality",
+            "endTime": endTime,
+            "state": WaterQualityType,
+            "measurement": WaterQualityDeviceID,
+            "startTime": startTime
+          }
+
+          var postStation_sl = {
+            "type": "WaterQuantity",
+            "endTime": endTime,
+            "state": WaterQuantityType,
+            "measurement": WaterQuantityDeviceID,
+            "startTime": startTime
+          }
+
+          var postWeather = {
+            "code": weaterURL,
+            "endTime": endTime,
+            "region": region,
+            "startTime": startTime,
+          }
+
+          var option;
+
+          var weatherData
+          admin.req({
+            url: 'http://36.7.72.89:8015/api/v1/model',
+            async: false,
+            type: 'POST',
+            data: JSON.stringify(postWeather),
+            dataType: 'json',
+            contentType: "application/json",
+            success: function (res) {
+              var resData = res.data
+              if (res.data.length === 0) {
+                layer.open({
+                  title: '日期错误',
+                  content: '气象历史数据不存在'
+                });
+                return;
+              }
+              console.log('res: ', JSON.parse(res.data));
+              weatherData = splitWeatherData(JSON.parse(res.data))
+              console.log('splitWeatherData: ', weatherData)
+            }
+          })
+
+          var modelInfo = {};
+          var modelData = {};
+          admin.req({
+            // url: 'http://127.0.0.1:7001/model',
+            url: 'http://36.7.72.89:8015/api/v1/model',
+            type: 'POST',
+            async: false,
+            data: JSON.stringify(postModel),
+            dataType: 'json',
+            contentType: "application/json",
+            success: function (res) { 
+              var resData = res.data
+              if(res.data.length === 0){
+                layer.open({
+                  title: '日期错误', 
+                  content: '模型历史数据不存在'
+                }); 
+                return;
+              } 
+
+              console.log('res: ', JSON.parse(res.data));
+              modelInfo = splitData(JSON.parse(res.data))
+              modelData.depth = modelInfo.Depth
+              modelData.flow = modelInfo.Inflow
+              if(modelData.flow == undefined){
+                modelData.flow = modelInfo.Flow
+              }
+              if(modelData.flow == undefined){
+                modelData.flow = modelInfo.Runoff
+              }
+              console.log('splitData: ', modelInfo, 'modelData', modelData)
+
+              
+            }
+          });
+
+          if(modelInfo){
+            option = optionChart({
+              type: 'COD',
+              qualityMax: valueMax(modelInfo.COD)
+            }, {
+              FIndex, modelData
+            })
+          }
+
+          var water_quality_data = []
+          var water_quantity_data = []
+          if (WaterQualityDeviceID.length > 2){
+            admin.req({
+              url: 'http://36.7.72.89:8015/api/v1/station',
+              type: 'POST',
+              async: false,
+              data: JSON.stringify(postStation_sz),
+              dataType: 'json',
+              contentType: "application/json",
+              success: function (res) {
+                console.log('sz: ', res)
+                if (res.data instanceof Array && res.data.length === 0) {
+                  layer.open({
+                    title: '错误',
+                    content: '水质历史数据不存在'
+                  });
+                  return;
+                }
+                var res_data1 = JSON.parse(res.data)
+                var name ='COD'
+                console.log('station sz res: ', res, res_data1)
+                water_quality_data = splitHisDataSZ(res_data1)
+                console.log('splitSZ: ', water_quality_data)
+                var qualityMax = valueMax(water_quality_data[nameMapper(name)])
+                if (modelInfo[nameMapper(name)] !== undefined && valueMax(modelInfo[nameMapper(name)]) > qualityMax) {
+                  qualityMax = valueMax(modelInfo[nameMapper(name)])
+                }
+                console.log(qualityMax)
+
+                option = optionChart({
+                  type: nameMapper(name),
+                  unit: unitMapper(name),
+                  qualityMax: qualityMax
+                }, {
+                  FIndex, modelData
+                })
+                option = optionChartHisSZ(option, water_quality_data, "COD")
+              }
+            })
+          }
+          if (WaterQuantityDeviceID.length > 2) {
+            admin.req({
+              url: 'http://36.7.72.89:8015/api/v1/station',
+              type: 'POST',
+              async: false,
+              data: JSON.stringify(postStation_sl),
+              dataType: 'json',
+              contentType: "application/json",
+              success: function (res) {
+                console.log('sl: ', res)
+                if (res.data instanceof Array && res.data.length === 0) {
+                  layer.open({
+                    title: '错误',
+                    content: '水量历史数据不存在'
+                  });
+                  return;
+                }
+                var res_data = JSON.parse(res.data)
+                
+                console.log('station sl res: ', res, res_data)
+                water_quantity_data = splitHisDataSL(res_data)
+                console.log('splitSL: ', water_quantity_data)
+                option = optionChartHisSL(option, water_quantity_data)
+                // console.log('option', option)
+                // plot.setOption(option, true)
+
+              }
+            })
+          }
+          console.log('option', option)
+          if(modelInfo){
+            option.series[2].data = modelInfo.COD
+          }
+          option.series[1].data = weatherData.rainfall
+
+          
+
+          option.yAxis[0].max = valueMax(weatherData.rainfall)
+          option.yAxis[1].max = valueMax(modelData.flow)
+          plot.setOption(option, true)
+
+          var modelRes = ['COD', 'BOD', 'TSS', 'NO3-N(有机污染物)']
+          table.on('row(WaterQuality)', function (obj) {
+            // console.log(obj, $(obj.tr), $(obj.tr)[0], $(obj.tr)[1], $($(obj.tr)[0]), $($(obj.tr)[1])) //得到当前行元素对象
+            // console.log(obj.data, water_quantity_data) //得到当前行数据
+            //obj.del(); //删除当前行
+            //obj.update(fields) //修改当前行数据
+            var { name } = obj.data
+            var qualityMax = valueMax(water_quality_data[nameMapper(name)])
+
+            
+            if (modelInfo[nameMapper(name)] !== undefined && valueMax(modelInfo[nameMapper(name)]) > qualityMax) {
+              qualityMax = valueMax(modelInfo[nameMapper(name)])
+            }
+            console.log(qualityMax)
+
+            option = optionChart({
+              type: nameMapper(name),
+              unit: unitMapper(name),
+              qualityMax: qualityMax
+            }, {
+              FIndex, modelData
+            })
+            if (modelRes.indexOf(name) >= 0) {
+              console.log(name, modelInfo[nameMapper(name)])
+              option.series[2].data = modelInfo[nameMapper(name)]
+            }
+            option.series[1].data = weatherData.rainfall
+            option.yAxis[0].max = valueMax(weatherData.rainfall)
+            option.yAxis[1].max = valueMax(modelData.flow)
+            // plot.setOption(option, true)
+
+            option = optionChartHisSZ(option, water_quality_data, name)
+            if (WaterQuantityDeviceID.length > 2) {
+              option = optionChartHisSL(option, water_quantity_data)
+              console.log('hisSL option', option)
+              // plot.setOption(option, true)
+            }
+            console.log('option', option)
+            plot.setOption(option, true)
+          });
+          
+
+          window.addEventListener('resize', function () {
+            plot.resize()
+          })
+        })
+
+        $('#closeIcon').click(()=>{
+          document.getElementById('chartBox').style.display = 'none'
+          console.log('click ', WaterQualityDeviceID,
+            WaterQuantityDeviceID,)
+          mqttClient.unsubscribe(WaterQuantityDeviceID, function (err) {
+            if (!err) {
+              console.log('unsubscribe success! ' + WaterQuantityDeviceID)
+            }
+          })
+          mqttClient.unsubscribe(WaterQualityDeviceID, function (err) {
+            if (!err) {
+              console.log('unsubscribe success! ' + WaterQualityDeviceID)
+            }
+          })
+        })
+
+        if (callback instanceof Function) {
+          callback()
+          element.render('StationPopup')
+        }
+      }
+
+
+      var callbacks = {
+        'StationChart': station_popup_callback,
+        "NodeChart": node_popup_callback,
+        "LinkChart": link_popup_callback,
+        "SubcatchmentChart": subcatch_popup_callback
+      }
+
+      var { basemap, baseview, layers } = render_layer(
+        'Map_BiGuiYuanStreamDiv', callbacks
+      )
+
+      var { graphicsLayer } = layers
+
+      //物探数据1：2016新版污水管网.dwg
+      const Biguiyuan_WS_Junctions_JsonUrl =
+        'json/biguiyuan/BiguiyuanNan_WS_Junctions_3D_V2.json'
+      const Biguiyuan_WS_Conduits_JsonUrl =
+        'json/biguiyuan/BiguiyuanNan_WS_Conduits_3D_V3.json'
+      //物探数据1：2016新版雨水管网.dwg
+      const Biguiyuan_YS_Junctions_JsonUrl =
+        'json/biguiyuan/BiguiyuanNan_YS_Junctions_3D_V3.json'
+      const Biguiyuan_YS_Conduits_JsonUrl =
+        'json/biguiyuan/BiguiyuanNan_YS_Conduits_3D_V3.json'
+      //物探数据2：碧桂园片区排水管线图.dwg
+      const Biguiyuan_WS_Junctions_P_GP_JsonUrl =
+        'json/biguiyuan/BiguiyuanNan_WS_Junctions_GP_V1_North.json'
+      const Biguiyuan_WS_Conduits_GP_JsonUrl =
+        'json/biguiyuan/BiguiyuanNan_WS_Conduits_GP_V11_North.json'
+      const Biguiyuan_YS_Junctions_P_GP_JsonUrl =
+        'json/biguiyuan/BiguiyuanNan_YS_Junctions_GP_V1_North.json'
+      const Biguiyuan_YS_Conduits_GP_JsonUrl =
+        'json/biguiyuan/BiguiyuanNan_YS_Conduits_GP_V11_North.json'
+
+      var show_status = {
+        WS_J: false,
+        WS_J_PGP: false,
+        WS_C: false,
+        WS_C_GP: false,
+        YS_J: false,
+        YS_J_PGP: false,
+        YS_C: false,
+        YS_C_GP: false
+        // Whole: false
+      }
+
+
+      form.on('submit(LAY-index-filter)', function (data) {
+        var field = data.field
+        var objSelect
+        console.log(field)
+        var { objSelect, styleSelect } = field
+
+        var layers_mapper = {
+          WS_J: '污水检查井',
+          WS_J_PGP: '污水检查井_物探',
+          WS_C: '污水管网',
+          WS_C_GP: '污水管网_物探',
+          YS_J: '雨水检查井',
+          YS_J_PGP: '雨水检查井_物探',
+          YS_C:'雨水管网',
+          YS_C_GP:'雨水管网_物探'
+        }
+
+
+        const graphicsLayer = basemap.allLayers.find(function (layer) {
+          return layer.title === layers_mapper[objSelect]
+        })
+
+        switch (objSelect) {
+          case 'WS_J':
+            if (show_status[objSelect] == false) {
+              var wsj_layer = parseFeature(
+                Biguiyuan_WS_Junctions_JsonUrl,
+                graphicsLayer
+              )
+              console.log(wsj_layer)
+              show_status[objSelect] = true
+            }
+            break
+          case 'WS_J_PGP':
+            if (show_status[objSelect] == false) {
+              parseFeature(
+                Biguiyuan_WS_Junctions_P_GP_JsonUrl,
+                graphicsLayer
+              )
+              show_status[objSelect] = true
+            }
+            break
+          case 'WS_C':
+            if (show_status[objSelect] == false) {
+              parseFeature(
+                Biguiyuan_WS_Conduits_JsonUrl,
+                graphicsLayer
+              )
+              show_status[objSelect] = true
+            }
+            break
+          case 'WS_C_GP':
+            if (show_status[objSelect] == false) {
+              parseFeature(
+                Biguiyuan_WS_Conduits_GP_JsonUrl,
+                graphicsLayer
+              )
+              show_status[objSelect] = true
+            }
+            break
+          case 'YS_J':
+            if (show_status[objSelect] == false) {
+              parseFeature(
+                Biguiyuan_YS_Junctions_JsonUrl,
+                graphicsLayer
+              )
+              show_status[objSelect] = true
+            }
+            break
+          case 'YS_J_PGP':
+            if (show_status[objSelect] == false) {
+              parseFeature(
+                Biguiyuan_YS_Junctions_P_GP_JsonUrl,
+                graphicsLayer
+              )
+              show_status[objSelect] = true
+            }
+            break
+          case 'YS_C':
+            if (show_status[objSelect] == false) {
+              parseFeature(
+                Biguiyuan_YS_Conduits_JsonUrl,
+                graphicsLayer
+              )
+              show_status[objSelect] = true
+            }
+            break
+          case 'YS_C_GP':
+            if (show_status[objSelect] == false) {
+              parseFeature(
+                Biguiyuan_YS_Conduits_GP_JsonUrl,
+                graphicsLayer
+              )
+              show_status[objSelect] = true
+            }
+            break
+          case 'Whole':
+            if (show_status['WS_J'] == false) {
+              parseFeature(
+                Biguiyuan_WS_Junctions_JsonUrl,
+                graphicsLayer
+              )
+              show_status['WS_J'] = true
+            }
+
+            if (show_status['WS_J_PGP'] == false) {
+              parseFeature(
+                Biguiyuan_WS_Junctions_P_GP_JsonUrl,
+                graphicsLayer
+              )
+              show_status['WS_J_PGP'] = true
+            }
+
+            if (show_status['WS_C'] == false) {
+              parseFeature(
+                Biguiyuan_WS_Conduits_JsonUrl,
+                graphicsLayer
+              )
+              show_status['WS_C'] = true
+            }
+
+            if (show_status['WS_C_GP'] == false) {
+              parseFeature(
+                Biguiyuan_WS_Conduits_GP_JsonUrl,
+                graphicsLayer
+              )
+              show_status['WS_C_GP'] = true
+            }
+
+            if (show_status['YS_J'] == false) {
+              parseFeature(
+                Biguiyuan_YS_Junctions_JsonUrl,
+                graphicsLayer
+              )
+              show_status['YS_J'] = true
+            }
+
+            if (show_status['YS_J_PGP'] == false) {
+              parseFeature(
+                Biguiyuan_YS_Junctions_P_GP_JsonUrl,
+                graphicsLayer
+              )
+              show_status['YS_J_PGP'] = true
+            }
+
+            if (show_status['YS_C'] == false) {
+              parseFeature(
+                Biguiyuan_YS_Conduits_JsonUrl,
+                graphicsLayer
+              )
+              show_status['YS_C'] = true
+            }
+
+            if (show_status['YS_C_GP'] == false) {
+              parseFeature(
+                Biguiyuan_YS_Conduits_GP_JsonUrl,
+                graphicsLayer
+              )
+              show_status['YS_C_GP'] = true
+            }
+            break
+          default:
+            break
+        }
+        form.render(null, 'layadmin-biguiyuann-formlist')
+      })
+          
+     
+    }
+  )
+
+</script>

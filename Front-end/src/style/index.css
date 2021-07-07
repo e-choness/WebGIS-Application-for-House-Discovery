@@ -1,0 +1,14 @@
+#Map_ShaheAssessSectionDiv,
+#Chart_StandardReachingDiv {
+    padding: 0;
+    margin: 0;
+    height: 350px;
+    width: 100%;
+}
+
+#Chart_LoadAllocationDiv {
+    padding: 0;
+    margin: 0;
+    height: 380px;
+    width: 100%;
+}

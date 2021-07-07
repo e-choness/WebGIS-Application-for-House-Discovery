@@ -1,0 +1,326 @@
+<div class="layui-layout layui-layout-admin">
+  <div class="layui-header">
+    <!-- 头部区域（可配合layui已有的水平导航） -->
+    <!-- <div class="layui-logo">后台布局</div> -->
+    <ul class="layui-nav layui-layout-left">
+      <li class="layui-nav-item layadmin-flexible" lay-unselect>
+        <a href="javascript:;" layadmin-event="flexible" title="侧边伸缩">
+          <i
+            class="layui-icon layui-icon-shrink-right"
+            id="LAY_app_flexible"
+          ></i>
+        </a>
+      </li>
+      <!--<li class="layui-nav-item layui-this layui-hide-xs layui-hide-sm layui-show-md-inline-block">
+              <a lay-href="" title="">
+                控制台
+              </a>
+            </li>-->
+      <li class="layui-nav-item layui-hide-xs" lay-unselect>
+        <a href="javascript:;" target="_blank" title="">
+          <i class="layui-icon layui-icon-website"></i>
+        </a>
+      </li>
+
+      <li class="layui-nav-item" lay-unselect>
+        <a href="javascript:;" layadmin-event="refresh" title="Refresh">
+          <i class="layui-icon layui-icon-refresh-3"></i>
+        </a>
+      </li>
+<!-- 
+      <li class="layui-nav-item"><a href="/#/chaohu/biguiyuanNan">主页</a></li>
+      <li class="layui-nav-item"><a href="/#/subArea/plain">基础数据</a></li>
+      <li class="layui-nav-item"><a href="/#/subArea/plain">监测数据</a></li>
+      <li class="layui-nav-item"><a href="/#/subArea/plain">模型结果</a></li>
+      <li class="layui-nav-item"><a href="/#/subArea/plain">总量核算</a></li> -->
+      <!-- <li class="layui-nav-item" style="min-width: 75px">
+        <a href="javascript:;">Setting</a>
+        <dl class="layui-nav-child" style="text-align: center">
+          <dd><a href="/#/subArea/plain">Logger</a></dd>
+          <dd><a href="/#/subArea/plain">Scheduler</a></dd>
+        </dl>
+      </li> -->
+    </ul>
+    <!-- http://36.7.72.89:8102/profile -->
+    <ul class="layui-nav layui-layout-right" lay-filter="layadmin-layout-right">
+      <li class="layui-nav-item">
+        <script
+          type="text/html"
+          template
+          lay-url="json/profile.json"
+          lay-done="layui.sessionData.user(d)"
+        >
+          <a href="javascript:;">
+            <cite>{{ d.username }}</cite>
+          </a>
+          <dl class="layui-nav-child">
+            <dd><a lay-href="set/user/info">基本资料</a></dd>
+            <dd><a lay-href="set/user/password">修改密码</a></dd>
+            <hr>
+          </dl>
+        </script>
+
+        <script>
+          layui.sessionData.user = d => {
+            layui.element.render('nav', 'layadmin-layout-right')
+          }
+        </script>
+      </li>
+      <li class="layui-nav-item" layadmin-event="logout">
+        <a href="">Log out</a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- 侧边菜单 -->
+  <!-- http://36.7.72.89:8102/user/menu -->
+  <div class="layui-side layui-side-menu">
+    <div class="layui-side-scroll">
+      <script
+        type="text/html"
+        template
+        lay-url="json/menu.json"
+        lay-done="layui.sessionData.done(d)"
+        id="TPL_layout"
+      >
+        <div class="layui-logo" lay-href="">
+          <span>{{ layui.setter.name || 'layuiAdmin' }}</span>
+        </div>
+
+        <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu"
+          lay-filter="layadmin-system-side-menu">
+          {{#
+          console.log(d);
+
+          var path =  layui.router().path
+          ,pathURL = layui.admin.correctRouter(path.join('/'))
+          ,dataName = layui.setter.response.dataName;
+
+          layui.sessionData(layui.setter.tableName, {
+            key: layui.setter.request.permission,
+            value: d[dataName] ? d[dataName].permission : []
+          });
+          var res = d[dataName].res;
+          layui.each(res, function(index, item){
+
+            var hasChildren = typeof item.list === 'object' && item.list.length > 0
+            ,classSelected = function(){
+              var match = path[0] == item.name || (index == 0 && !path[0])
+              || (item.jump && pathURL == layui.admin.correctRouter(item.jump)) || item.spread;
+              if(match){
+                return hasChildren ? 'layui-nav-itemed' : 'layui-this';
+              }
+              return '';
+            }
+            ,url = (item.jump && typeof item.jump === 'string') ? item.jump : item.name;
+        }}
+          <li data-name="{{ item.name || '' }}" data-jump="{{ item.jump || '' }}"
+            class="layui-nav-item {{ classSelected() }}">
+            <a href="javascript:;" {{ hasChildren ? '' : 'lay-href="'+ url +'"' }} lay-tips="{{ item.title }}"
+              lay-direction="2">
+              <i class="layui-icon {{ item.icon }}"></i>
+              <cite>{{ item.title }}</cite>
+            </a>
+            {{# if(hasChildren){ }}
+            <dl class="layui-nav-child">
+              {{# layui.each(item.list, function(index2, item2){
+                var hasChildren2 = typeof item2.list == 'object' && item2.list.length > 0
+                ,classSelected2 = function(){
+                  var match = (path[0] == item.name && path[1] == item2.name)
+                  || (item2.jump && pathURL == layui.admin.correctRouter(item2.jump)) || item2.spread;
+                  if(match){
+                    return hasChildren2 ? 'layui-nav-itemed' : 'layui-this';
+                  }
+                  return '';
+                }
+                ,url2 = (item2.jump && typeof item2.jump === 'string')
+                  ? item2.jump
+                : [item.name, item2.name, ''].join('/');
+
+              }}
+
+              <dd data-name="{{ item2.name || '' }}" data-jump="{{ item2.jump || '' }}"
+                {{ classSelected2() ? ('class="'+ classSelected2() +'"') : '' }}>
+                {{# if(url2.indexOf('http') !== -1){ }}
+                  <a target="_blank" {{ hasChildren2 ? '' : 'href="'+ url2 +'"' }}><i class="layui-icon {{ item2.icon }}"></i>
+                    <cite>{{ item2.title }}</cite></a>
+                {{# } else { }}
+                  <a href="javascript:;" {{ hasChildren2 ? '' : 'lay-href="'+ url2 +'"' }}><i class="layui-icon {{ item2.icon }}"></i>
+                    <cite>{{ item2.title }}</cite></a>
+                {{# } }}
+                {{# if(hasChildren2){ }}
+                <dl class="layui-nav-child">
+                  {{# layui.each(item2.list, function(index3, item3){
+                        var match = (path[0] == item.name && path[1] == item2.name && path[2] == item3.name)
+                        || (item3.jump && pathURL == layui.admin.correctRouter(item3.jump))
+                        ,url3 = (item3.jump && typeof item3.jump === 'string')
+                          ? item3.jump
+                        : [item.name, item2.name, item3.name].join('/')
+                      }}
+                  <dd data-name="{{ item3.name || '' }}" data-jump="{{ item3.jump || '' }}"
+                    {{ match ? 'class="layui-this"' : '' }}>
+                    <a href="javascript:;" lay-href="{{ url3 }}"
+                      {{ item3.iframe ? 'lay-iframe="true"' : '' }}>{{ item3.title }}</a>
+                  </dd>
+                  {{# }); }}
+                </dl>
+                {{# } }}
+              </dd>
+              {{# }); }}
+            </dl>
+            {{# } }}
+          </li>
+          {{# }); }}
+        </ul>
+      </script>
+
+      <script>
+        layui.sessionData.done = function(d) {
+          // console.log('layout-menu')
+          // console.log(d)
+          layui.element.render('nav', 'layadmin-system-side-menu')
+        }
+        // layui.use(['axios', () => {
+        //   var axios = layui.axios
+        //   console.log(axios)
+        // }])
+      </script>
+    </div>
+  </div>
+
+  <!-- 页面标签 -->
+  <script
+    type="text/html"
+    template
+    lay-done="layui.element.render('nav', 'layadmin-pagetabs-nav')"
+  >
+    {{# if(layui.setter.pageTabs){ }}
+    <div class="layadmin-pagetabs" id="LAY_app_tabs" style="top:0;line-height:49px;height:49px;right:10%">
+      <div class="layui-tab" lay-unauto lay-allowClose="true" lay-filter="layadmin-layout-tabs" >
+        <ul class="layui-tab-title" id="LAY_app_tabsheader" style="line-height:49px;height:49px">
+          <li lay-id="/"><i class="layui-icon layui-icon-home" style="line-height:49px;height:49px"></i></li>
+        </ul>
+      </div>
+    </div>
+    {{# } }}
+  </script>
+
+  <!-- <div
+    class="layadmin-pagetabs"
+    id=""
+    style="top:0;line-height:49px;height:49px;left:90%;;"
+  >
+    <ul
+      class="layui-nav layui-layout-right"
+      lay-filter="layadmin-layout-right"
+      style="left: 0;width:100%;background-color: #393D49;line-height:49px;height:49px;"
+    >
+      <li
+        class="layui-nav-item"
+        lay-unselect
+        style="line-height: 49px;width:100%;"
+      >
+        <script
+          type="text/html"
+          template
+          lay-url="http://36.7.72.89:8102/profile"
+          lay-done="layui.sessionData.user(d)"
+        >
+          <a href="javascript:;">
+            <cite style="">欢迎：{{ d.username }}</cite>
+          </a>
+          <dl class="layui-nav-child" >
+            <dd><a lay-href="set/user/info">基本资料</a></dd>
+            <dd><a lay-href="set/user/password">修改密码</a></dd>
+            <hr>
+            <dd layadmin-event="logout" style="text-align: center;"><a>退出</a></dd>
+          </dl>
+        </script>
+
+        <script>
+          layui.sessionData.user = d => {
+            layui.element.render('nav', 'layadmin-layout-right')
+          }
+        </script>
+      </li>
+    </ul>
+  </div> -->
+
+  <!-- 主体内容 -->
+  <div class="layui-body" id="LAY_app_body" style="top:49px">
+    <div class="layadmin-tabsbody-item layui-show"></div>
+  </div>
+
+  <!-- 辅助元素，一般用于移动设备下遮罩 -->
+  <div class="layadmin-body-shade" layadmin-event="shade"></div>
+</div>
+
+<script>
+  // layui.use([], function() {
+  //   var $ = layui.$
+  //   $('body').delegate('.layui-tab-title li', 'click', function() {
+  //     //或者$(this).childNodes[0].data
+  //     var tab = $(this).context.childNodes[0].childNodes[0].data
+  //     var nav_items = $('.layui-nav-item dd a cite')
+  //     var Len = nav_items.length
+  //     console.log(nav_items)
+
+  //     var Index
+  //     for (var i = 0; i < Len; i++) {
+  //       if (tab == nav_items[i].innerHTML) {
+  //         Index = i
+  //       }
+  //     }
+
+  //     var curr_parent = nav_items.eq(Index).closest('.layui-nav-item')
+  //     curr_parent.addClass('layui-nav-itemed')
+  //     // 左侧菜单初始化
+  //     $('.left-nav')
+  //       .find('a')
+  //       .removeClass('active')
+  //     $('#nav li a cite')
+  //       .eq(Index)
+  //       .parentsUntil('#nav')
+  //       .eq(3)
+  //       .siblings()
+  //       .children('.sub-menu')
+  //       .stop(true, true)
+  //       .slideUp()
+  //     $('#nav li a cite')
+  //       .eq(Index)
+  //       .parentsUntil('#nav')
+  //       .eq(3)
+  //       .siblings()
+  //       .find('.nav_right')
+  //       .html('&#xe697;')
+  //     $('#nav li a cite')
+  //       .eq(Index)
+  //       .parentsUntil('#nav')
+  //       .eq(3)
+  //       .removeClass('open')
+
+  //     $('#nav li a cite')
+  //       .eq(Index)
+  //       .parentsUntil('#nav')
+  //       .eq(0)
+  //       .addClass('active')
+  //     $('#nav li a cite')
+  //       .eq(Index)
+  //       .parentsUntil('#nav')
+  //       .eq(3)
+  //       .addClass('open')
+  //     $('#nav li a cite')
+  //       .eq(Index)
+  //       .parentsUntil('#nav')
+  //       .eq(3)
+  //       .find('.nav_right')
+  //       .html('&#xe6a6;')
+  //     $('#nav li a cite')
+  //       .eq(Index)
+  //       .parentsUntil('#nav')
+  //       .eq(2)
+  //       .stop(true, true)
+  //       .slideDown()
+  //   })
+  // })
+</script>

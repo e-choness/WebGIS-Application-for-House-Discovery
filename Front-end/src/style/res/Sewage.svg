@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- 由 Microsoft Visio, SVG Export 生成 Sewage.svg 页-1 -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
+		xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="5.35652in" height="5.35652in"
+		viewBox="0 0 385.669 385.669" xml:space="preserve" color-interpolation-filters="sRGB" class="st4">
+	<v:documentProperties v:langID="2052" v:metric="true" v:viewMarkup="false"/>
+
+	<style type="text/css">
+	<![CDATA[
+		.st1 {fill:#7f6000;stroke:#ffc000;stroke-linecap:round;stroke-linejoin:round;stroke-width:20}
+		.st2 {fill:#ffffff;font-family:黑体;font-size:15em;font-weight:bold}
+		.st3 {fill:#ffffff;stroke:none;stroke-linecap:butt;stroke-width:0.146484}
+		.st4 {fill:none;fill-rule:evenodd;font-size:12px;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]>
+	</style>
+
+	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
+		<title>页-1</title>
+		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50394"
+				v:shadowOffsetY="-8.50394"/>
+		<g id="shape2-1" v:mID="2" v:groupContext="shape" transform="translate(10,-10)">
+			<title>工作表.2</title>
+			<desc>污</desc>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197" v:verticalAlign="0"/>
+			<v:textRect cx="182.835" cy="202.835" width="365.67" height="365.669"/>
+			<ellipse cx="182.835" cy="202.835" rx="182.835" ry="182.835" class="st1"/>
+			<text x="92.48" y="186" class="st2" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>污</text>		</g>
+		<g id="group6-4" transform="translate(117.407,-27.0079)" v:mID="6" v:groupContext="group">
+			<title>工作表.6</title>
+			<g id="shape7-5" v:mID="7" v:groupContext="shape" transform="translate(40.985,-25.6348)">
+				<title>工作表.7</title>
+				<path d="M27.77 378.05 L20.73 378.05 L20.08 376.84 C19 374.86 16.95 373.63 14.69 373.63 C12.46 373.63 10.4 374.86
+							 9.31 376.84 L8.66 378.05 L1.62 378.05 C0.75 378.05 0 378.78 0 379.65 C0 380.53 0.73 381.25 1.62 381.25
+							 L8.66 381.25 L9.31 382.46 C10.39 384.44 12.46 385.67 14.69 385.67 C16.93 385.67 18.99 384.44 20.08 382.46
+							 L20.73 381.25 L27.77 381.25 C28.66 381.25 29.39 380.53 29.39 379.65 C29.39 378.77 28.67 378.05 27.77
+							 378.05 Z" class="st3"/>
+			</g>
+			<g id="shape8-7" v:mID="8" v:groupContext="shape">
+				<title>工作表.8</title>
+				<path d="M150.85 297.6 C150.85 266.68 125.27 241.53 93.8 241.53 C69.23 241.53 48.24 256.89 40.24 278.35 C17.02 284.95
+							 0 306.03 0 330.94 C0 361.12 24.98 385.67 55.68 385.67 C78.74 385.67 98.57 371.83 107.01 352.14 C132.12
+							 346.28 150.85 324.04 150.85 297.6 ZM55.68 377.01 C29.84 377.01 8.81 356.34 8.81 330.94 C8.81 311.87
+							 20.67 295.46 37.53 288.48 C39.96 287.47 42.49 286.66 45.11 286.06 C48.51 285.28 52.04 284.87 55.68 284.87
+							 C81.52 284.87 102.55 305.54 102.55 330.94 C102.55 335.98 101.72 340.85 100.18 345.39 L100.17 345.39
+							 C99.2 348.26 97.95 351.01 96.46 353.6 L96.47 353.6 C88.41 367.56 73.15 377.01 55.68 377.01 ZM109.97
+							 343.1 C110.88 339.19 111.36 335.12 111.36 330.94 C111.36 300.77 86.38 276.22 55.68 276.22 C53.65 276.22
+							 51.67 276.32 49.7 276.52 C57.68 260.47 74.44 249.38 93.82 249.38 C120.87 249.38 142.87 271 142.87 297.59
+							 C142.85 318.61 129.1 336.52 109.97 343.1 Z" class="st3"/>
+			</g>
+			<g id="shape9-9" v:mID="9" v:groupContext="shape" transform="translate(15.3806,-15.1172)">
+				<title>工作表.9</title>
+				<path d="M40.3 306.45 C18.08 306.45 0 324.22 0 346.06 C0 367.9 18.08 385.67 40.3 385.67 C62.52 385.67 80.6 367.9
+							 80.6 346.06 C80.6 324.22 62.52 306.45 40.3 306.45 ZM53.37 375.34 L49.02 375.34 C47.01 378.1 43.77 379.77
+							 40.28 379.77 C36.8 379.77 33.58 378.1 31.55 375.34 L27.2 375.34 C23.73 375.34 20.89 372.56 20.89 369.15
+							 C20.89 365.73 23.73 362.95 27.2 362.95 L31.55 362.95 C33.56 360.2 36.8 358.53 40.28 358.53 C43.77 358.53
+							 46.99 360.2 49.02 362.95 L53.12 362.95 C54.76 363.76 56.44 364.47 58.15 365.12 C59.11 366.2 59.67 367.61
+							 59.67 369.15 C59.67 372.56 56.84 375.34 53.37 375.34 Z" class="st3"/>
+			</g>
+		</g>
+	</g>
+</svg>

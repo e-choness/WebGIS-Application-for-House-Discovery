@@ -1,0 +1,30 @@
+<div id="Map_ShaheWaterPollutionHisDiv">
+</div>
+
+<style>
+  #Map_ShaheWaterPollutionHisDiv {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+  }
+
+  .esri-popup__main-container.esri-widget {
+      width: 1250px !important;
+      height: 800px !important;
+    }
+</style>
+
+
+<script>
+
+layui.use(['arcgis', 'historianData'], function(){
+  var {historianData} = layui.historianData;
+  var {Map, GeoJSONLayer,  SceneView, BasemapToggle} = layui.arcgis;
+  
+  historianData('Map_ShaheWaterPollutionHisDiv', Map, GeoJSONLayer,  SceneView, BasemapToggle )
+})
+
+
+
+</script>

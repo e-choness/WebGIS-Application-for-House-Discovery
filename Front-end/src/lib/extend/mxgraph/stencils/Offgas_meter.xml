@@ -1,0 +1,127 @@
+<shapes>
+<shape name="pipe01">
+	<background>
+		<path>
+			<move x="0" y="0"/>
+			<line x="99" y="0"/>
+			<line x="100" y="50"/>
+			<line x="99" y="100"/>
+			<line x="0" y="100"/>
+			<line x="1" y="50"/>
+			<close/>
+		</path>
+	</background>
+	<foreground>
+		<fillstroke/>
+	</foreground>
+</shape>
+<shape name="pipe02">
+	<background>
+		<path>
+			<move x="0" y="0"/>
+			<line x="100" y="0"/>
+			<line x="100" y="100"/>
+			<line x="0" y="100"/>
+			<close/>
+		</path>
+	</background>
+	<foreground>
+		<fillstroke/>
+	</foreground>
+</shape>
+<shape name="TeeValve">
+	<background>
+		<ellipse x="25" y="25" w="50" h="50"/>
+	</background>
+	<foreground>
+		<fillstroke/>
+		<path>
+			<move x="25" y="0"/>
+			<line x="75" y="0"/>
+			<line x="50" y="50"/>
+			<close/>
+		</path>
+		<stroke/>
+		<path>
+			<move x="0" y="25"/>
+			<line x="50" y="50"/>
+			<line x="0" y="75"/>
+			<close/>
+		</path>
+		<stroke/>
+		<path>
+			<move x="50" y="50"/>
+			<line x="100" y="25"/>
+			<line x="100" y="75"/>
+			<close/>
+		</path>
+		<stroke/>
+	</foreground>
+</shape>
+<shape name="sensorChamber">
+	<background>
+		<path>
+			<move x="0" y="33.3"/>
+			<line x="5" y="33.3"/>
+			<line x="10" y="0"/>
+			<line x="90" y="0"/>
+			<line x="95" y="33.3"/>
+			<line x="100" y="33.3"/>
+			<line x="100" y="66.6"/>
+			<line x="95" y="66.6"/>
+			<line x="90" y="100"/>
+			<line x="10" y="100"/>
+			<line x="5" y="66.6"/>
+			<line x="0" y="66.6"/>
+			<close/>
+		</path>
+	</background>
+	<foreground>
+		<fillstroke/>
+	</foreground>
+</shape>
+<shape name="VPump">
+	<background>
+		<ellipse x="0" y="0" w="100" h="100"/>
+	</background>
+	<foreground>
+		<fillstroke/>
+		<path>
+			<move x="25" y="6"/>
+			<line x="100" y="50"/>
+			<line x="25" y="94"/>
+			<close/>
+		</path>
+		<stroke/>
+	</foreground>
+</shape>
+<shape name="Gage">
+	<background>
+		<ellipse x="0" y="0" w="100" h="100"/>
+	</background>
+	<foreground>
+		<fillstroke/>
+	</foreground>
+</shape>
+<shape name="PipeSensor01">
+	<background>
+		<path>
+			<move x="0" y="0"/>
+			<line x="100" y="0"/>
+			<line x="100" y="100"/>
+			<line x="0" y="100"/>
+			<close/>
+		</path>
+	</background>
+	<foreground>
+		<fillstroke/>
+		<path>
+			<move x="25" y="25"/>
+			<line x="75" y="50"/>
+			<line x="25" y="75"/>
+			<close/>
+		</path>
+		<stroke/>
+	</foreground>
+</shape>
+</shapes>

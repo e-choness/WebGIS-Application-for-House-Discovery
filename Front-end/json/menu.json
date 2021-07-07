@@ -1,0 +1,120 @@
+{
+  "code": 0,
+  "msg": "",
+  "data": {
+    "res": [
+      {
+        "name": "Data",
+        "title": "Data",
+        "icon": "layui-icon-home",
+        "jump": "‘’",
+        "pid": 0,
+        "id": 123,
+        "order": 1,
+        "list": [
+          {
+            "name": "House",
+            "title": "House",
+            "icon": "layui-icon-senior",
+            "jump": "mainBoard/general",
+            "pid": 123,
+            "id": 124,
+            "order": 1
+          },
+          {
+            "name": "Bus",
+            "title": "Bus",
+            "icon": "layui-icon-flag",
+            "jump": "mainBoard/general",
+            "pid": 123,
+            "id": 125,
+            "order": 2
+          }
+        ]
+      },
+      {
+        "name": "Analyze",
+        "title": "Analyze",
+        "icon": "layui-icon-app",
+        "jump": "",
+        "pid": 0,
+        "id": 126,
+        "order": 2,
+        "list": [
+          {
+            "name": "HeatMap",
+            "title": "HeatMap",
+            "icon": "layui-icon-fonts-strong",
+            "jump": "subArea/plain",
+            "pid": 126,
+            "id": 127,
+            "order": 1
+          },
+          {
+            "name": "Scatter Map",
+            "title": "Scatter Map",
+            "icon": "layui-icon-note",
+            "jump": "subArea/plain",
+            "pid": 126,
+            "id": 128,
+            "order": 2
+          }
+        ]
+      },
+      {
+        "name": "System",
+        "title": "System",
+        "icon": "layui-icon-set",
+        "jump": "system",
+        "pid": 0,
+        "id": 1,
+        "order": 6,
+        "list": [
+          {
+            "name": "role",
+            "title": "Role Management",
+            "icon": "layui-icon-username",
+            "jump": "system/role",
+            "pid": 1,
+            "id": 2,
+            "order": 2,
+            "permissions": ["add", "edit", "delete"]
+          },
+          {
+            "name": "user",
+            "title": "User Management",
+            "icon": "layui-icon-group",
+            "jump": "system/user",
+            "pid": 1,
+            "id": 6,
+            "order": 2,
+            "permissions": ["add", "edit", "delete"]
+          }
+        ]
+      }
+    ],
+    "permission": [
+      "''",
+      "subArea",
+      "subArea",
+      "role:view",
+      "user:view",
+      "menu:view",
+      "system:website",
+      "subArea",
+      "subArea",
+      "subArea",
+      "subArea",
+      "subArea",
+      "role:add",
+      "role:edit",
+      "role:delete",
+      "user:add",
+      "user:edit",
+      "user:delete",
+      "menu:add",
+      "menu:edit",
+      "menu:delete"
+    ]
+  }
+}

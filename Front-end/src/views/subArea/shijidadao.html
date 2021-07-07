@@ -1,0 +1,953 @@
+<title>世纪大道</title>
+
+<style>
+  #station-laydate-range-datetime {
+    min-width: 250px;
+  }
+
+  .station_itemed, .layui-table-hover {
+    background-color: #009688;
+    color: #fff;
+  }
+
+  .water_table {
+    text-align: center;
+    margin-bottom: 5px;
+  }
+
+  #Map_shijidadaoStreamDiv {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+  }
+
+  #LAY-station-dataview {
+    height: 100%;
+  }
+
+  #chartBox {
+    height: 80%;
+    /* width: 70%; */
+    background-color: rgb(250, 250, 250);
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    right: 15px;
+    display: 'none';
+    opacity: 0.9;
+    box-shadow: 0px 0px 10px 10px rgb(0, 174, 255);
+    z-index: 50;
+  }
+
+  #chartBox .hisChart_class {
+    height: 45%;
+    width: 90%;
+    margin-left: 5%;
+    margin-right: 5%;
+    text-align: center;
+
+    bottom: 15px;
+    position: absolute;
+    display: 'none';
+  }
+
+  #chartBoxL {
+    height: 65%;
+    width: 95%;
+    background-color: rgb(250, 250, 250);
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    right: 15px;
+    display: 'none';
+    opacity: 0.9;
+    box-shadow: 0px 0px 10px 10px rgb(0, 174, 255);
+  }
+
+  #chartBoxL .layui-row {
+    height: 100%;
+    width: 95%;
+    margin: 0 auto;
+    padding: 0 auto;
+    position: absolute;
+  }
+
+  #chartBoxL .layui-col-sm9 {
+    height: 80%;
+    width: 74%;
+    /* border: 1px solid rgb(0, 174, 255); */
+    right: 0;
+    position: absolute;
+  }
+
+  #chartBoxL .layui-col-sm3 {
+    height: 80%;
+    width: 25%;
+    /* border: 1px solid gold; */
+    padding-left: 5%;
+    position: absolute;
+  }
+
+  #chartBoxL .comChart {
+    height: 95%;
+    width: 95%;
+    /* margin-left: 5%;
+    margin-right: 5%; */
+    text-align: center;
+    bottom: 15px;
+    position: absolute;
+    display: 'none';
+  }
+</style>
+
+
+
+<div id="Map_shijidadaoStreamDiv">
+</div>
+
+<div id="chartBox" style="display:none">
+  <img id='closeIcon' align="right" src="src/style/res/close-circle.svg" width="25" height="25" />
+  <div class="layui-col-sm12">
+    <div class="layui-card">
+      <!-- <div class="layui-card-header">点位数据结果</div> -->
+      <div id="" class="layui-card-body">
+        <div class="layui-row layui-col-space10">
+          <div class="layui-col-md6">
+            <h3 class="water_table">实时水量</h3>
+            <div class="grid-demo grid-demo-bg1">
+              <table id="WaterQuantity"></table>
+            </div>
+          </div>
+          <div class="layui-col-md6">
+            <h3 class="water_table">实时水质</h3>
+            <div class="grid-demo">
+              <table id="WaterQuality" lay-filter="WaterQuality"></table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="layui-form" style="margin-top: 200px;" lay-filter="station-shijidadao-formlist">
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label class="layui-form-label" style="text-align: left">历史数据</label>
+        <div class="layui-input-inline" style="margin-left: -30px;min-width: 290px;">
+          <input type="text" class="layui-input" id="station-laydate-range-datetime" name='date_range'>
+        </div>
+      </div>
+      <div class="layui-inline" style="margin-left: 0px">
+        <button class="layui-btn" lay-submit lay-filter="station-history-submit">查询</button>
+      </div>
+    </div>
+  </div>
+  <div id="hisChart" class="hisChart_class"></div>
+</div>
+
+<div id="chartBoxL" style="display: none;">
+  <img id='closeIconL' align="right" src="src/style/res/close-circle.svg" width="25" height="25" />
+  <div class="layui-form" style="margin-top: 10px;" lay-filter="common-shijidadao-formlist">
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label class="layui-form-label" style="text-align: left">模型数据</label>
+        <div class="layui-input-inline" style="margin-left: -30px;min-width: 290px;">
+          <input type="text" class="layui-input" id="common-laydate-range-datetime" name='date_range'>
+        </div>
+      </div>
+      <div class="layui-inline" style="margin-left: 0px">
+        <button class="layui-btn" lay-submit lay-filter="common-history-submit">查询</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="layui-row">
+    <div class="layui-col-sm3">
+      <table id="indicator" lay-filter="indicator"></table>
+    </div>
+    <div class="layui-col-sm9">
+      <div id="comChart" class="comChart"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.0.1/echarts.min.js"></script> -->
+<script>
+  var region = "shijidadao"
+  layui.use(
+    ['shijidadao', 'laydate', 'table', 'layer', 'arcgis', 'mqttClient', 'optionChaohu', 'splitData', 'element', 'table', 'layer', 'jquery', 'admin',],
+    function () {
+      var element = layui.element
+      var form = layui.form
+      var laydate = layui.laydate
+      var table = layui.table
+      var layer = layui.layer
+      var $ = layui.jquery
+      var { valueMax, DateDiff, splitData, unitMapper, nameMapper, splitLinkData, splitSubcatchmentData, splitHisDataSL, splitHisDataSZ, splitWeatherData } = layui.splitData
+      var { render_layer, parseFeature } = layui.shijidadao
+      var { optionChart, optionChartHisSL, optionChartHisSZ } = layui.optionChaohu
+      var admin = layui.admin
+      var mqttClient = layui.mqttClient
+      var { Graphic } = layui.arcgis
+
+      console.log('echarts version: ', echarts.version)
+
+
+      form.render(null, 'layadmin-shijidadao-formlist')
+      form.render(null, 'station-shijidadao-formlist')
+
+      //日期时间范围
+      var curr = new Date();
+
+      laydate.render({
+          elem: '#station-laydate-range-datetime',
+          type: 'datetime',
+          value: curr,
+          range: '~',
+          
+          max: 1,
+      });
+
+      laydate.render({
+        elem: '#common-laydate-range-datetime',
+        type: 'datetime',
+        value: curr,
+        range: '~',
+        
+        max: 1,
+      });
+
+
+      Number.prototype.countDecimals = function () {
+        if (Math.floor(this.valueOf()) === this.valueOf()) return 0;
+        return this.toString().split(".")[1].length || 0;
+      }
+
+
+      $('#closeIconL').click(() => {
+        document.getElementById('chartBoxL').style.display = 'none'
+      })
+
+      function popup_callback_wrapper(splitData, optionChart, type = 'NodeChart') {
+        var FIndex
+        var weaterURL = '00_Weather'
+        var popup_callback = (obj, callback) => {
+          document.getElementById('chartBoxL').style.display = 'block'
+          var plot = echarts.init(document.getElementById('comChart'), null, {})
+          table.render({
+            elem: '#indicator',
+            height: 400,
+            width: 200,
+            cols: [
+              [
+                //表头
+                { field: 'name', title: '指标名', width: 90, fixed: 'left', sort: true },
+                { field: 'unit', title: '单位', width: 90 },
+              ]
+            ],
+            data: [
+              {
+                "name": "COD",
+                "unit": "mg/L"
+              },
+              {
+                "name": "NH4",
+                "unit": "mg/L"
+              },
+              {
+                "name": "TSS",
+                "unit": "mg/L"
+              },
+              {
+                "name": "TN",
+                "unit": "mg/L"
+              },
+              {
+                "name": "TP",
+                "unit": "mg/L"
+              },
+            ]
+          })
+
+          plot.clear()
+          if (type == 'NodeChart') {
+            FIndex = obj.MSOutletNode
+            if (FIndex == undefined || FIndex == " ") {
+              FIndex = obj.MSName;
+            }
+            if (FIndex == undefined || FIndex == " ") {
+              FIndex = obj.Name;
+            }
+          }
+          else {
+            FIndex = obj.MSName
+            if (FIndex == undefined || FIndex == " ") {
+              FIndex = obj.NAME;
+            }
+            if (FIndex == undefined || FIndex == " ") {
+              FIndex = obj.Name;
+            }
+          }
+
+          console.log('FIndex ', FIndex, 'Obj: ', obj);
+          form.on('submit(common-history-submit)', function (data) {
+            var { date_range } = data.field
+            var dates = date_range.split("~")
+            var startTime = dates[0].trim()
+            var endTime = dates[1].trim()
+            var diff = DateDiff(startTime, endTime)
+            console.log('check history: ', diff, startTime, endTime)
+            if (diff > 14) {
+              layer.open({
+                title: '日期错误',
+                content: '日期超出范围，查询时间范围为14天'
+              });
+              return;
+            }
+            var postModel = {
+              "code": FIndex,
+              "endTime": endTime,
+              "region": region,
+              "startTime": startTime,
+            }
+            var postWeather = {
+              "code": weaterURL,
+              "endTime": endTime,
+              "region": region,
+              "startTime": startTime,
+            }
+            var weatherData
+            var modelInfo
+            admin.req({
+              url: 'http://36.7.72.89:8015/api/v1/model',
+              async: false,
+              type: 'POST',
+              data: JSON.stringify(postWeather),
+              dataType: 'json',
+              contentType: "application/json",
+              success: function (res) {
+                var resData = res.data
+                if (res.data.length === 0) {
+                  layer.open({
+                    title: '日期错误',
+                    content: '模型历史数据不存在'
+                  });
+                  return;
+                }
+                console.log('res: ', JSON.parse(res.data));
+                weatherData = splitWeatherData(JSON.parse(res.data))
+                console.log('splitWeatherData: ', weatherData)
+              }
+            })
+
+            admin.req({
+              url: 'http://36.7.72.89:8015/api/v1/model',
+              async: false,
+              type: 'POST',
+              data: JSON.stringify(postModel),
+              dataType: 'json',
+              contentType: "application/json",
+              success: function (res) {
+                var resData = res.data
+
+                console.log('res: ', JSON.parse(res.data));
+                modelInfo = splitData(JSON.parse(res.data))
+                console.log('splitData: ', modelInfo)
+              }
+            })
+
+            var modelData
+            if (type == 'NodeChart') {
+              modelData = {
+                "flow": modelInfo.Inflow,
+                "depth": modelInfo.Depth
+              }
+            }
+            else if (type == 'LinkChart') {
+              modelData = {
+                "flow": modelInfo.Flow,
+                "depth": modelInfo.Depth
+              }
+            }
+            else if (type == 'SubcatchmentChart') {
+              modelData = {
+                "flow": modelInfo.Runoff
+              }
+            }
+
+            option = optionChart({
+              type: 'COD',
+              qualityMax: valueMax(modelInfo.COD)
+            }, {
+              FIndex, modelData
+            })
+            if(modelInfo){
+            option.series[2].data = modelInfo.COD
+          }
+            option.series[1].data = weatherData.rainfall
+
+            option.yAxis[0].max = valueMax(weatherData.rainfall)
+            option.yAxis[1].max = valueMax(modelData.flow)
+
+            console.log('option ', option)
+            plot.setOption(option, true)
+
+            table.on('row(indicator)', function (obj) {
+              // console.log(obj.tr) //得到当前行元素对象
+              console.log(obj.data) //得到当前行数据
+              var { name } = obj.data
+              //obj.del(); //删除当前行
+              //obj.update(fields) //修改当前行数据
+              if (name == 'COD') {
+                option = optionChart({
+                  type: 'COD',
+                  qualityMax: valueMax(modelInfo.COD)
+                }, {
+                  FIndex, modelData
+                })
+                if(modelInfo){
+            option.series[2].data = modelInfo.COD
+          }
+                option.series[1].data = weatherData.rainfall
+
+                option.yAxis[0].max = valueMax(weatherData.rainfall)
+                option.yAxis[1].max = valueMax(modelData.flow)
+                plot.setOption(option, true)
+              } else if (name == 'TSS') {
+                option = optionChart({
+                  type: 'TSS',
+                  qualityMax: valueMax(modelInfo.TSS)
+                }, {
+                  FIndex, modelData
+                })
+                option.series[2].data = modelInfo.TSS
+                option.series[1].data = weatherData.rainfall
+
+                option.yAxis[0].max = valueMax(weatherData.rainfall)
+                option.yAxis[1].max = valueMax(modelData.flow)
+                plot.setOption(option, true)
+              } else if (name == 'TP') {
+                option = optionChart({
+                  type: 'TP',
+                  qualityMax: valueMax(modelInfo.TP)
+                }, {
+                  FIndex, modelData
+                })
+                option.series[2].data = modelInfo.TP
+                option.series[1].data = weatherData.rainfall
+
+                option.yAxis[0].max = valueMax(weatherData.rainfall)
+                option.yAxis[1].max = valueMax(modelData.flow)
+                plot.setOption(option, true)
+              } else if (name == 'TN') {
+                option = optionChart({
+                  type: 'TN',
+                  qualityMax: valueMax(modelInfo.TN)
+                }, {
+                  FIndex, modelData
+                })
+                option.series[2].data = modelInfo.TN
+                option.series[1].data = weatherData.rainfall
+
+                option.yAxis[0].max = valueMax(weatherData.rainfall)
+                option.yAxis[1].max = valueMax(modelData.flow)
+                plot.setOption(option, true)
+              } else if (name == 'NH4') {
+                option = optionChart({
+                  type: 'NH4',
+                  qualityMax: valueMax(modelInfo.NH4)
+                }, {
+                  FIndex, modelData
+                })
+                console.log('NH4', valueMax(modelInfo.NH4))
+                option.series[2].data = modelInfo.NH4
+                option.series[1].data = weatherData.rainfall
+
+                option.yAxis[0].max = valueMax(weatherData.rainfall)
+                option.yAxis[1].max = valueMax(modelData.flow)
+                plot.setOption(option, true)
+              }
+            })
+
+          })
+        }
+        return popup_callback
+      }
+
+      var node_popup_callback = popup_callback_wrapper(splitData, optionChart)
+      var link_popup_callback = popup_callback_wrapper(splitLinkData, optionChart, type = "LinkChart")
+      var subcatch_popup_callback = popup_callback_wrapper(splitSubcatchmentData, optionChart, type = "SubcatchmentChart")
+
+
+      var FIndex,
+        WaterQualityDeviceID,
+        WaterQuantityDeviceID,
+        WaterQualityType,
+        WaterQuantityType
+      var weaterURL = '00_Weather'
+      var station_popup_callback = (obj, callback) => {
+        document.getElementById('chartBox').style.display = 'block'
+        //水量表
+        table.render({
+          elem: '#WaterQuantity',
+          title: '实时水量',
+          height: 180,
+          cols: [
+            [
+              //表头
+              { field: 'name', title: '指标名', width: 90, fixed: 'left', sort: true },
+              { field: 'value', title: '值', width: 90 },
+              { field: 'unit', title: '单位', width: 90 },
+              { field: 'time', title: '更新时间', width: 90, },
+              {
+                field: 'id',
+                title: '水量指标',
+                width: 100,
+              },
+            ]
+          ],
+          data: [
+            {
+              "name": "瞬时流量",
+              "unit": "m3/s",
+              "value": 0
+            },
+            {
+              "name": "液位",
+              "unit": "mm",
+              "value": 0
+            },
+            {
+              "name": "流速",
+              "unit": "m/s",
+              "value": 0
+            },
+          ]
+        })
+        table.render({
+          elem: '#WaterQuality',
+          title: '实时水质',
+          height: 180,
+          cols: [
+            [
+              //表头
+              { field: 'name', title: '指标名', width: 150, fixed: 'left', sort: true },
+              { field: 'value', title: '值', width: 90 },
+              { field: 'unit', title: '单位', width: 90 },
+              { field: 'time', title: '更新时间', width: 90, },
+              {
+                field: 'id',
+                title: '水质指标',
+                width: 100,
+              },
+            ]
+          ],
+          data: [
+            {
+              "name": "COD",
+              "value": 0,
+              "unit": "mg/L",
+            },
+            {
+              "name": "TSS",
+              "value": 0,
+              "unit": "mg/L",
+            },
+          ]
+        })
+
+        var plot = echarts.init(document.getElementById('hisChart'), null, {})
+        plot.clear()
+
+        FIndex = obj.MSOutletNode
+        if (FIndex == undefined || FIndex == " ") {
+          FIndex = obj.MSName;
+        }
+        if (FIndex == undefined || FIndex == " ") {
+          FIndex = obj.Name;
+        }
+        console.log('FIndex: ', FIndex, obj)
+        WaterQualityDeviceID = obj.WaterQualityDeviceID
+        WaterQuantityDeviceID = obj.WaterQuantityDeviceID
+        WaterQualityType = obj.WaterQualityType
+        WaterQuantityType = obj.WaterQuantityType
+
+        console.log('station popup callback----', obj)
+
+        mqttClient.subscribe(WaterQuantityDeviceID, function (err) {
+          if (!err) {
+            console.log('subscribe success! ' + WaterQuantityDeviceID)
+          }
+        })
+        mqttClient.subscribe(WaterQualityDeviceID, function (err) {
+          if (!err) {
+            console.log('subscribe success! ' + WaterQualityDeviceID)
+          }
+        })
+
+        function parseStationValue(value, filter = ['rj_voltage', 'rj_diff', 't651_FF14', 't651_FF15', 't651_FF11']) {
+          var data = []
+          var res = JSON.parse(value)
+          // console.log(res)
+          var data = []
+          for (var i = 0; i < res.length; i++) {
+            if (filter.indexOf(res[i]["code"]) < 0) {
+              data.push({
+                'id': res[i]["code"],
+                'name': res[i]["name"],
+                'time': res[i]["time"].split(' ')[1],
+                'value': res[i]["value"],
+                'unit': res[i]["unit"]
+              }
+              )
+            }
+          }
+          // console.log(data)
+          return data
+        }
+
+
+        mqttClient.on('message', function (topic, message) {
+          var value = message.toString()
+          // console.log('topic', topic, value, 'sl',WaterQuantityDeviceID, 'sz',WaterQualityDeviceID);
+          // console.log(value);
+          // 
+          if (topic == WaterQuantityDeviceID) {
+            var data = parseStationValue(value)
+            // console.log('sl mqtt data: ', data)
+            // console.log('topic', topic, 'sl', WaterQuantityDeviceID, data);
+            // console.log('SL', WaterQuantityType, WaterQuantityDeviceID)
+            //水量表
+            table.render({
+              elem: '#WaterQuantity',
+              height: 180,
+              cols: [
+                [
+                  //表头
+                  { field: 'name', title: '指标名', width: 90, fixed: 'left', sort: true },
+                  { field: 'value', title: '值', width: 90 },
+                  { field: 'unit', title: '单位', width: 90 },
+                  { field: 'time', title: '更新时间', width: 90, },
+                  {
+                    field: 'id',
+                    title: '水量指标',
+                    width: 100,
+                  },
+                ]
+              ],
+              data: data
+            })
+
+          }
+
+          else if (topic == WaterQualityDeviceID) {
+            var data = parseStationValue(value)
+            // console.log('sz mqtt data: ', data)
+            // console.log('topic', topic, 'sz', WaterQualityDeviceID, data);
+            //固定水质表
+            table.render({
+              elem: '#WaterQuality',
+              height: 180,
+              cols: [
+                [
+                  //表头
+                  { field: 'name', title: '指标名', width: 150, fixed: 'left', sort: true },
+                  { field: 'value', title: '值', width: 90 },
+                  { field: 'unit', title: '单位', width: 90 },
+                  { field: 'time', title: '更新时间', width: 90, },
+                  {
+                    field: 'id',
+                    title: '水质指标',
+                    width: 100,
+                  },
+                ]
+              ],
+              data: data
+            })
+          }
+        })
+
+        form.on('submit(station-history-submit)', (data) => {
+          var { date_range } = data.field
+          var dates = date_range.split("~")
+          var startTime = dates[0].trim()
+          var endTime = dates[1].trim()
+          var diff = DateDiff(startTime, endTime)
+          console.log('check history: ', diff, startTime, endTime, FIndex)
+          if (diff > 14) {
+            layer.open({
+              title: '日期错误',
+              content: '日期超出范围，查询时间范围为14天'
+            });
+            return;
+          }
+          var postModel = {
+            "code": FIndex,
+            "endTime": endTime,
+            "region": region,
+            "startTime": startTime
+          }
+
+          var postStation_sz = {
+            "type": "WaterQuality",
+            "endTime": endTime,
+            "state": WaterQualityType,
+            "measurement": WaterQualityDeviceID,
+            "startTime": startTime
+          }
+
+          var postStation_sl = {
+            "type": "WaterQuantity",
+            "endTime": endTime,
+            "state": WaterQuantityType,
+            "measurement": WaterQuantityDeviceID,
+            "startTime": startTime
+          }
+
+          var postWeather = {
+            "code": weaterURL,
+            "endTime": endTime,
+            "region": region,
+            "startTime": startTime,
+          }
+
+          var option;
+
+          var weatherData
+          admin.req({
+            url: 'http://36.7.72.89:8015/api/v1/model',
+            async: false,
+            type: 'POST',
+            data: JSON.stringify(postWeather),
+            dataType: 'json',
+            contentType: "application/json",
+            success: function (res) {
+              var resData = res.data
+              if (res.data.length === 0) {
+                layer.open({
+                  title: '日期错误',
+                  content: '气象历史数据不存在'
+                });
+                return;
+              }
+              console.log('res: ', JSON.parse(res.data));
+              weatherData = splitWeatherData(JSON.parse(res.data))
+              console.log('splitWeatherData: ', weatherData)
+            }
+          })
+
+          var modelInfo = {};
+          var modelData = {};
+          admin.req({
+            // url: 'http://127.0.0.1:7001/model',
+            url: 'http://36.7.72.89:8015/api/v1/model',
+            type: 'POST',
+            async: false,
+            data: JSON.stringify(postModel),
+            dataType: 'json',
+            contentType: "application/json",
+            success: function (res) {
+              var resData = res.data
+              if (res.data.length === 0) {
+                layer.open({
+                  title: '日期错误',
+                  content: '模型历史数据不存在'
+                });
+                return;
+              }
+
+              console.log('res: ', JSON.parse(res.data));
+              modelInfo = splitData(JSON.parse(res.data))
+              modelData.depth = modelInfo.Depth
+              modelData.flow = modelInfo.Inflow
+              if (modelData.flow == undefined) {
+                modelData.flow = modelInfo.Flow
+              }
+              if (modelData.flow == undefined) {
+                modelData.flow = modelInfo.Runoff
+              }
+              console.log('splitData: ', modelInfo, 'modelData', modelData)
+
+
+            }
+          });
+
+          if (modelInfo) {
+            option = optionChart({
+              type: 'COD',
+              qualityMax: valueMax(modelInfo.COD)
+            }, {
+              FIndex, modelData
+            })
+          }
+
+          var water_quality_data = []
+          var water_quantity_data = []
+          if (WaterQualityDeviceID.length > 2) {
+            admin.req({
+              url: 'http://36.7.72.89:8015/api/v1/station',
+              type: 'POST',
+              async: false,
+              data: JSON.stringify(postStation_sz),
+              dataType: 'json',
+              contentType: "application/json",
+              success: function (res) {
+                console.log('sz: ', res)
+                if (res.data instanceof Array && res.data.length === 0) {
+                  layer.open({
+                    title: '错误',
+                    content: '水质历史数据不存在'
+                  });
+                  return;
+                }
+                var res_data1 = JSON.parse(res.data)
+                var name = 'COD'
+                console.log('station sz res: ', res, res_data1)
+                water_quality_data = splitHisDataSZ(res_data1)
+                console.log('splitSZ: ', water_quality_data)
+                var qualityMax = valueMax(water_quality_data[nameMapper(name)])
+                if (modelInfo[nameMapper(name)] !== undefined && valueMax(modelInfo[nameMapper(name)]) > qualityMax) {
+                  qualityMax = valueMax(modelInfo[nameMapper(name)])
+                }
+                console.log(qualityMax)
+
+                option = optionChart({
+                  type: nameMapper(name),
+                  unit: unitMapper(name),
+                  qualityMax: qualityMax
+                }, {
+                  FIndex, modelData
+                })
+                option = optionChartHisSZ(option, water_quality_data, "COD")
+              }
+            })
+          }
+          if (WaterQuantityDeviceID.length > 2) {
+            admin.req({
+              url: 'http://36.7.72.89:8015/api/v1/station',
+              type: 'POST',
+              async: false,
+              data: JSON.stringify(postStation_sl),
+              dataType: 'json',
+              contentType: "application/json",
+              success: function (res) {
+                console.log('sl: ', res)
+                if (res.data instanceof Array && res.data.length === 0) {
+                  layer.open({
+                    title: '错误',
+                    content: '水量历史数据不存在'
+                  });
+                  return;
+                }
+                var res_data = JSON.parse(res.data)
+
+                console.log('station sl res: ', res, res_data)
+                water_quantity_data = splitHisDataSL(res_data)
+                console.log('splitSL: ', water_quantity_data)
+                option = optionChartHisSL(option, water_quantity_data)
+                // console.log('option', option)
+                // plot.setOption(option, true)
+
+              }
+            })
+          }
+          console.log('option', option)
+          if (modelInfo) {
+            option.series[2].data = modelInfo.COD
+          }
+          option.series[1].data = weatherData.rainfall
+
+
+
+          option.yAxis[0].max = valueMax(weatherData.rainfall)
+          option.yAxis[1].max = valueMax(modelData.flow)
+          plot.setOption(option, true)
+
+          var modelRes = ['COD', 'BOD', 'TSS', 'NO3-N(有机污染物)']
+          table.on('row(WaterQuality)', function (obj) {
+            console.log(obj, $(obj.tr), $(obj.tr)[0], $(obj.tr)[1], $($(obj.tr)[0]), $($(obj.tr)[1])) //得到当前行元素对象
+            console.log(obj.data, water_quantity_data) //得到当前行数据
+            //obj.del(); //删除当前行
+            //obj.update(fields) //修改当前行数据
+            var { name } = obj.data
+            var qualityMax = valueMax(water_quality_data[nameMapper(name)])
+            if (modelInfo[nameMapper(name)] !== undefined && valueMax(modelInfo[nameMapper(name)]) > qualityMax) {
+              qualityMax = valueMax(modelInfo[nameMapper(name)])
+            }
+            console.log(qualityMax)
+
+            option = optionChart({
+              type: nameMapper(name),
+              unit: unitMapper(name),
+              qualityMax: qualityMax
+            }, {
+              FIndex, modelData
+            })
+            if (modelRes.indexOf(name) >= 0) {
+              option.series[2].data = modelInfo[nameMapper(name)]
+            }
+            option.series[1].data = weatherData.rainfall
+            option.yAxis[0].max = valueMax(weatherData.rainfall)
+            option.yAxis[1].max = valueMax(modelData.flow)
+            // plot.setOption(option, true)
+
+            option = optionChartHisSZ(option, water_quality_data, name)
+            if (WaterQuantityDeviceID.length > 2) {
+              option = optionChartHisSL(option, water_quantity_data)
+              console.log('hisSL option', option)
+              // plot.setOption(option, true)
+            }
+            console.log('option', option)
+            plot.setOption(option, true)
+          });
+
+
+          window.addEventListener('resize', function () {
+            plot.resize()
+          })
+        })
+
+        $('#closeIcon').click(() => {
+          document.getElementById('chartBox').style.display = 'none'
+          console.log('click ', WaterQualityDeviceID,
+            WaterQuantityDeviceID)
+          mqttClient.unsubscribe(WaterQuantityDeviceID, function (err) {
+            if (!err) {
+              console.log('unsubscribe success! ' + WaterQuantityDeviceID)
+            }
+          })
+          mqttClient.unsubscribe(WaterQualityDeviceID, function (err) {
+            if (!err) {
+              console.log('unsubscribe success! ' + WaterQualityDeviceID)
+            }
+          })
+        })
+
+        if (callback instanceof Function) {
+          callback()
+          element.render('StationPopup')
+        }
+      }
+      
+
+
+      var callbacks = {
+        'StationChart': station_popup_callback,
+        "NodeChart": node_popup_callback,
+        "LinkChart": link_popup_callback,
+        "SubcatchmentChart": subcatch_popup_callback
+      }
+
+      var { basemap, baseview, layers } = render_layer(
+        'Map_shijidadaoStreamDiv', callbacks
+      )
+
+      // var { graphicsLayer, stationLayer } = layers
+      
+
+
+    }
+  )
+
+</script>

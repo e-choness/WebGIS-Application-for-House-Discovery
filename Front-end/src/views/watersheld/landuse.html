@@ -1,0 +1,22 @@
+<div id="Map_ShaheLanduse">
+</div>
+
+<style>
+    #Map_ShaheLanduse {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+    }
+</style>
+
+<script>
+  layui.use(['arcgis', 'landuse'], function() {
+
+    var {Map, GeoJSONLayer, SceneView, BasemapToggle} = layui.arcgis;
+    var {landuse} = layui.landuse;
+
+    landuse("Map_ShaheLanduse", Map, GeoJSONLayer, SceneView, BasemapToggle)
+
+  })
+</script>

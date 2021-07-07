@@ -1,0 +1,274 @@
+<script type="text/html" template>
+  <link rel="stylesheet" href="{{ layui.setter.base }}style/login.css?v={{ layui.admin.v }}-1" media="all">
+</script>
+
+
+<style>
+  body {
+    background: url('src/style/res/globe.jpg');
+  }
+
+  #LAY-user-login {
+    z-index: 999;
+  }
+
+  #LAY-user-login h2, p {
+    color: white;
+  }
+
+
+  @keyframes rotate {
+    from {
+      transform: rotate(360deg);
+    }
+    to {
+      transform: rotate(0deg);
+    }
+  }
+  .icon_rotate {
+    height: 28px !important;
+    animation: rotate infinite 8s linear;
+  }
+  
+
+  .planet-box {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+  }
+
+  .planet-box .planet-globe {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+  }
+
+  .planet-box .planet-globe-pole {
+      position: absolute;
+      top: -265px;
+      left: -265px;
+      width: 360px;
+      height: 360px;
+      border-radius: 50% 50%;
+      background-color: #fff;
+  }
+
+  .planet-box .planet-globe-doms-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+  }
+
+  .planet-box .planet-globe-halo {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin-top: -233px;
+      margin-left: -240px;
+      width: 490px;
+      height: 470px;
+      background-size: contain;
+  }
+</style>
+
+<section class="planet-box">
+  <div class="planet-globe">
+    <div class="planet-globe-doms-container"></div>
+    <div class="planet-globe-halo"></div>
+  </div>
+</section>
+
+<div
+  class="layadmin-user-login layadmin-user-display-show"
+  id="LAY-user-login"
+  style="display: none;"
+>
+  <div class="layadmin-user-login-main">
+    <div class="layadmin-user-login-box layadmin-user-login-header">
+      <h2>House Discovery V0.1</h2>
+      <p></p>
+    </div>
+    <div class="layadmin-user-login-box layadmin-user-login-body layui-form">
+      <div class="layui-form-item">
+        <label
+          class="layadmin-user-login-icon layui-icon layui-icon-username"
+          for="LAY-user-login-username"
+        ></label>
+        <input
+          type="text"
+          name="username"
+          id="LAY-user-login-username"
+          lay-verify="required"
+          placeholder="用户名"
+          class="layui-input"
+        />
+      </div>
+      <div class="layui-form-item">
+        <label
+          class="layadmin-user-login-icon layui-icon layui-icon-password"
+          for="LAY-user-login-password"
+        ></label>
+        <input
+          type="password"
+          name="password"
+          id="LAY-user-login-password"
+          lay-verify="required"
+          placeholder="密码"
+          class="layui-input"
+        />
+      </div>
+
+      <div class="layui-form-item" style="margin-bottom: 20px;">
+        <!-- <input
+          type="checkbox"
+          name="remember"
+          lay-skin="primary"
+          title="记住密码"
+        /> -->
+        <!-- <a
+          lay-href="/user/forget"
+          class="layadmin-user-jump-change layadmin-link"
+          style="margin-top: 7px;"
+          >忘记密码？</a
+        > -->
+      </div>
+      <div class="layui-form-item">
+        <button
+          class="layui-btn layui-btn-fluid"
+          id="LAY-user-login-submit"
+          lay-submit
+          lay-filter="LAY-user-login-submit"
+        >
+          Sign in
+        </button>
+      </div>
+      <div class="layui-form-item">
+        <button class="layui-btn layui-btn-fluid" id="LAY-user-login-reg" lay-submit lay-filter="LAY-user-login-reg">
+          Sign up
+        </button>
+      </div>
+
+      <!-- <div class="layui-trans layui-form-item layadmin-user-login-other">
+        <label>其他账号登入</label>
+        <a href="javascript:;"
+          ><i class="layui-icon layui-icon-login-qq"></i
+        ></a>
+        <a href="javascript:;"
+          ><i class="layui-icon layui-icon-login-wechat"></i
+        ></a>
+        <a href="javascript:;"
+          ><i class="layui-icon layui-icon-login-weibo"></i
+        ></a>
+        <a href="javascript:;" id="oidcBtn"
+          ><img src="/src/style/res/logo3.png" alt="" class="icon_rotate"
+        /></a>
+        <a lay-href="/user/reg" class="layadmin-user-jump-change layadmin-link"
+          >注册帐号</a
+        >
+      </div> -->
+    </div>
+  </div>
+
+  <div class="layui-trans layadmin-user-login-footer">
+    <p>© 2021 <a href="http://chglj.hefei.gov.cn/" target="_blank" style="color: white;">COMP 5112 Research Methdology</a></p>
+  </div>
+
+  <!--<div class="ladmin-user-login-theme">
+    <script type="text/html" template>
+      <ul>
+        <li data-theme=""><img src="{{ layui.setter.base }}style/res/bg-none.jpg"></li>
+        <li data-theme="#03152A" style="background-color: #03152A;"></li>
+        <li data-theme="#2E241B" style="background-color: #2E241B;"></li>
+        <li data-theme="#50314F" style="background-color: #50314F;"></li>
+        <li data-theme="#344058" style="background-color: #344058;"></li>
+        <li data-theme="#20222A" style="background-color: #20222A;"></li>
+      </ul>
+    </script>
+  </div>-->
+</div>
+
+<script src="src/lib/initEarth.js"></script>
+<script>
+  layui.use(['admin', 'form', 'user', 'oidc'], function() {
+    var $ = layui.$,
+      setter = layui.setter,
+      admin = layui.admin,
+      form = layui.form,
+      router = layui.router(),
+      search = router.search
+
+    form.render()
+
+    //提交
+    // http://36.7.72.89:8102/auth/login
+    form.on('submit(LAY-user-login-submit)', function(obj) {
+      //请求登入接口
+      var { username, password } = obj.field
+      var postData = {
+        clientId: 'dm.client',
+        clientSecret: 'secret',
+        usernameOrEmail: username,
+        password: password,
+        grantType: 'password',
+        scope: ''
+      }
+      console.log(postData)
+      admin.req({
+        url: 'http://36.7.72.89:8180/api/auth/signin', //实际使用请改成服务端真实接口
+        type: 'POST',
+        data: JSON.stringify(postData),
+        dataType: 'json',
+        contentType: 'application/json',
+        done: function(res) {
+          //请求成功后，写入 access_token
+          // var resData = JSON.parse(res.data[0])
+          // console.log(resData)
+          layui.sessionData(setter.tableName, {
+            key: setter.request.tokenName,
+            value: 'Bearer ' + res.data.accessToken
+          })
+
+          //登入成功的提示与跳转
+          layer.msg(
+            'Login Success!',
+            {
+              offset: '15px',
+              icon: 1,
+              time: 1000
+            },
+
+            function() {
+              location.href = '/#/index'
+            }
+          )
+        }
+      })
+    })
+
+    var oidcBtc = $('#oidcBtn')
+    var config = {
+      // userStore: new Oidc.WebStorageStateStore({ store: window.localStorage }),
+      authority: 'http://10.0.225.1:8001/',
+      client_id: 'js_client_id',
+      redirect_uri: 'http://10.0.225.2:8001/callback.html',
+      post_logout_redirect_uri: 'http://10.0.225.1:8002/Home/Index',
+      response_type: 'code',
+      scope: 'openid profile RBAC.Api'
+    }
+
+    var mgr = new Oidc.UserManager(config)
+    oidcBtc.click(() => {
+      mgr.signinRedirect()
+    })
+    //实际使用时记得删除该代码
+    layer.msg('为了方便演示，用户名密码可随意输入', {
+      offset: '15px',
+      icon: 1
+    })
+  })
+</script>

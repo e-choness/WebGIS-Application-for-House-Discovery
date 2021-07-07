@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- 由 Microsoft Visio, SVG Export 生成 RainGage.svg 页-1 -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
+		xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="5.35652in" height="5.35652in"
+		viewBox="0 0 385.669 385.669" xml:space="preserve" color-interpolation-filters="sRGB" class="st4">
+	<v:documentProperties v:langID="2052" v:metric="true" v:viewMarkup="false"/>
+
+	<style type="text/css">
+	<![CDATA[
+		.st1 {fill:#f9c499;stroke:#92cddc;stroke-linecap:round;stroke-linejoin:round;stroke-width:20}
+		.st2 {fill:#ffffff;font-family:黑体;font-size:15em;font-weight:bold}
+		.st3 {fill:#ffffff;stroke:none;stroke-linecap:butt;stroke-width:0.146484}
+		.st4 {fill:none;fill-rule:evenodd;font-size:12px;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]>
+	</style>
+
+	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
+		<title>页-1</title>
+		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50394"
+				v:shadowOffsetY="-8.50394"/>
+		<g id="shape15-1" v:mID="15" v:groupContext="shape" transform="translate(10,-10)">
+			<title>工作表.15</title>
+			<desc>气</desc>
+			<v:textBlock v:margins="rect(4,4,4,4)" v:tabSpace="42.5197" v:verticalAlign="0"/>
+			<v:textRect cx="182.835" cy="202.835" width="365.67" height="365.669"/>
+			<ellipse cx="182.835" cy="202.835" rx="182.835" ry="182.835" class="st1"/>
+			<text x="92.48" y="186" class="st2" v:langID="2052"><v:paragraph v:horizAlign="1"/><v:tabList/>气</text>		</g>
+		<g id="group16-4" transform="translate(127.942,-35.5118)" v:mID="16" v:groupContext="group">
+			<title>工作表.16</title>
+			<g id="shape17-5" v:mID="17" v:groupContext="shape" transform="translate(0,-75.2637)">
+				<title>工作表.17</title>
+				<path d="M63.96 339.48 L1.48 356.05 C0 356.46 0.07 358.58 1.57 358.89 L10.96 360.84 C12.71 361.21 13.97 362.74 13.97
+							 364.55 L16.95 381.2 C16.96 383.85 19.6 385.67 22.08 384.75 L64.92 367.84 C65.79 367.52 66.72 367.52
+							 67.59 367.84 L107.67 383.46 C110.14 384.38 112.78 382.55 112.78 379.91 L115.63 361.1 L115.65 361.1 L128.28
+							 358.12 C129.76 357.76 129.79 355.67 128.32 355.27 L65.95 339.47 C65.29 339.29 64.6 339.31 63.96 339.48
+							 Z" class="st3"/>
+			</g>
+			<g id="shape18-7" v:mID="18" v:groupContext="shape" transform="translate(18.3691,-55.166)">
+				<title>工作表.18</title>
+				<path d="M0 372.87 L0.06 383.96 C0.06 384.98 1.08 385.67 2.04 385.32 L46.57 367.96 C47.43 367.64 48.37 367.64 49.23
+							 367.96 L91.13 384.01 C92.08 384.37 93.09 383.66 93.11 382.65 L93.02 372 C93.02 371.39 92.64 370.83 92.07
+							 370.63 L48.65 353.88 C47.78 353.56 46.83 353.56 45.98 353.88 L0.95 371.47 C0.38 371.69 0 372.25 0 372.87
+							 Z" class="st3"/>
+			</g>
+			<g id="shape19-9" v:mID="19" v:groupContext="shape" transform="translate(18.3691,-34.9512)">
+				<title>工作表.19</title>
+				<path d="M0 372.87 L0.06 383.96 C0.06 384.98 1.08 385.67 2.04 385.32 L46.57 367.96 C47.43 367.64 48.37 367.64 49.23
+							 367.96 L91.13 384.01 C92.08 384.37 93.09 383.66 93.11 382.65 L93.16 372 C93.16 371.39 92.78 370.83 92.21
+							 370.63 L48.65 353.88 C47.78 353.56 46.83 353.56 45.98 353.88 L0.95 371.47 C0.38 371.69 0 372.25 0 372.87
+							 Z" class="st3"/>
+			</g>
+			<g id="shape20-11" v:mID="20" v:groupContext="shape" transform="translate(18.3691,-15.3516)">
+				<title>工作表.20</title>
+				<path d="M0 373.48 L0.03 381.22 C0.04 383.85 2.7 385.67 5.16 384.75 L46.55 368.57 C47.42 368.25 48.35 368.25 49.22
+							 368.57 L88.01 383.46 C90.48 384.38 93.11 382.56 93.12 379.93 L93.15 372.6 C93.15 371.99 92.77 371.43
+							 92.2 371.23 L48.65 354.5 C47.78 354.18 46.83 354.18 45.98 354.5 L0.95 372.09 C0.38 372.31 0 372.87 0
+							 373.48 Z" class="st3"/>
+			</g>
+			<g id="shape21-13" v:mID="21" v:groupContext="shape" transform="translate(29.4141,0)">
+				<title>工作表.21</title>
+				<path d="M70.08 369.86 L38.12 358.58 C37.29 358.29 36.42 358.29 35.6 358.57 L0.75 370.52 C0 370.79 0.13 371.87 0.91
+							 371.94 L25.52 373.8 C27.45 373.99 27.23 377.91 25.14 377.91 L23.22 377.91 C18.37 377.91 14.43 378.92
+							 14.43 383.76 L14.43 384.94 C14.43 385.35 14.75 385.67 15.16 385.67 L55.59 385.67 C56 385.67 56.32 385.35
+							 56.32 384.94 L56.32 383.76 C56.32 378.92 52.38 377.91 47.53 377.91 L45.62 377.91 C43.52 377.91 43.23
+							 374.14 45.1 373.88 L69.93 371.28 C70.69 371.18 70.8 370.13 70.08 369.86 Z" class="st3"/>
+			</g>
+		</g>
+	</g>
+</svg>

@@ -1,0 +1,32 @@
+<div id="Map_ShaheStreamDiv"></div>
+
+<style>
+  #Map_ShaheStreamDiv {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+  }
+</style>
+
+<script>
+  layui.use(['arcgis', 'stream'], function() {
+    var {
+      Map,
+      GeoJSONLayer,
+      SceneView,
+      BasemapToggle,
+      PopupTemplate
+    } = layui.arcgis
+    var { stream } = layui.stream
+
+    stream(
+      'Map_ShaheStreamDiv',
+      Map,
+      GeoJSONLayer,
+      SceneView,
+      BasemapToggle,
+      PopupTemplate
+    )
+  })
+</script>

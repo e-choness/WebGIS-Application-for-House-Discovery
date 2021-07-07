@@ -1,0 +1,168 @@
+<script type="text/javascript">
+  var mxImageBasePath = './src/lib/extend/mxgraph/images'
+  var mxBasePath = './src/lib/extend/mxgraph'
+</script>
+
+<style type="text/css">
+  .flow {
+    stroke-dasharray: 8;
+    animation: dash 0.5s linear;
+    animation-iteration-count: infinite;
+  }
+
+  @keyframes dash {
+    to {
+      stroke-dashoffset: -16;
+    }
+  }
+</style>
+
+<!-- 外部需要再包装一个div作为容器 -->
+<div>
+  <div class="layui-card">
+    <div class="layui-card-body">
+      <div
+        id="graphContainer"
+        style="position:relative;overflow:hidden;width:100%;height:361px;background:url('src/lib/extend/mxgraph/images/grid.gif');cursor:default;border:1px solid gray;"
+      ></div>
+    </div>
+  </div>
+
+  <div class="layui-card">
+    <div class="layui-card-body">
+      <div id="LineV" style="width:100%;height:200px;"></div>
+    </div>
+  </div>
+
+  <div class="layui-card">
+    <div class="layui-card-body">
+      <div id="LineO2" style="width:100%;height:200px;"></div>
+    </div>
+  </div>
+
+  <div class="layui-card">
+    <div class="layui-card-body">
+      <div id="LineCO2" style="width:100%;height:200px;"></div>
+    </div>
+  </div>
+
+  <div class="layui-card">
+    <div class="layui-card-body">
+      <div id="LineH" style="width:100%;height:200px;"></div>
+    </div>
+  </div>
+
+  <div class="layui-card">
+    <div class="layui-card-body">
+      <div id="LineT" style="width:100%;height:200px;margin-bottom:100px"></div>
+    </div>
+  </div>
+
+  <div class="layui-card">
+    <div class="layui-card-body">
+      <div id="LineOTE" style="width:100%;height:200px;"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  layui.use(['optionMQTT', 'mqttClient', 'console_mx'], function() {
+    // mxgraph必须要使用4.0.0的版本，之后的版本会有echarts加载不出来的问题,调试了很久
+    //相比之前的版本，js换成了production version，不必发送诸多http请求
+    // var echarts = layui.echarts;
+    console.log('offgas')
+    // 抽离mqttClient，同一个客户端只有一个mqtt连接，scope为模块
+    var mqttClient = layui.mqttClient
+    // 将mxgraph onload抽离到controller里面,传入要渲染的容器id，以及要监听的MQTTClient
+    var console_mx = layui.console_mx
+    //echarts参数,将所有的echarts选项配置抽离到utils里的optionMQTT,方便进行统一配置
+    // var influx = layui.influx;
+    // console.log(influx)
+    var {
+      optionLineOTE,
+      optionLineV,
+      optionLineO2,
+      optionLineCO2,
+      optionLineH,
+      optionLineT,
+      mqttOptions
+    } = layui.optionMQTT
+
+    let LineOTEChart = echarts.init(document.getElementById('LineOTE'))
+    let LineVChart = echarts.init(document.getElementById('LineV'))
+    let LineO2Chart = echarts.init(document.getElementById('LineO2'))
+    let LineCO2Chart = echarts.init(document.getElementById('LineCO2'))
+    let LineHChart = echarts.init(document.getElementById('LineH'))
+    let LineTChart = echarts.init(document.getElementById('LineT'))
+
+    // mqttClient连接成功后
+
+    if (mqttClient != null) {
+      console_mx(document.getElementById('graphContainer'), mqttClient)
+
+      mqttClient.on('message', function(topic, message) {
+        // console.log(topic);
+        // console.log(message.toString());
+        var value = message.toString()
+        var now = new Date()
+
+        if (topic === 'og001_OTE') {
+          var data = optionLineOTE.series[0].data
+          data.shift()
+          data.push(value)
+          optionLineOTE.xAxis.data.shift()
+          optionLineOTE.xAxis.data.push(
+            now.toLocaleTimeString().replace(/^\D*/, '')
+          )
+          LineOTEChart.setOption(optionLineOTE)
+        } else if (topic === 'og001_V') {
+          var data = optionLineV.series[0].data
+          data.shift()
+          data.push(value)
+          optionLineV.xAxis.data.shift()
+          optionLineV.xAxis.data.push(
+            now.toLocaleTimeString().replace(/^\D*/, '')
+          )
+          LineVChart.setOption(optionLineV)
+        } else if (topic === 'og001_O2') {
+          var data = optionLineO2.series[0].data
+          data.shift()
+          data.push(value)
+          optionLineO2.xAxis.data.shift()
+          optionLineO2.xAxis.data.push(
+            now.toLocaleTimeString().replace(/^\D*/, '')
+          )
+          LineO2Chart.setOption(optionLineO2)
+        } else if (topic === 'og001_CO2') {
+          var data = optionLineCO2.series[0].data
+          data.shift()
+          data.push(value)
+          optionLineCO2.xAxis.data.shift()
+          optionLineCO2.xAxis.data.push(
+            now.toLocaleTimeString().replace(/^\D*/, '')
+          )
+          LineCO2Chart.setOption(optionLineCO2)
+        } else if (topic === 'og001_H') {
+          var data = optionLineH.series[0].data
+          data.shift()
+          data.push(value)
+          optionLineH.xAxis.data.shift()
+          optionLineH.xAxis.data.push(
+            now.toLocaleTimeString().replace(/^\D*/, '')
+          )
+          LineHChart.setOption(optionLineH)
+        } else if (topic === 'og001_T') {
+          console.log(topic)
+          var data = optionLineT.series[0].data
+          data.shift()
+          data.push(value)
+          optionLineT.xAxis.data.shift()
+          optionLineT.xAxis.data.push(
+            now.toLocaleTimeString().replace(/^\D*/, '')
+          )
+          LineTChart.setOption(optionLineT)
+        }
+      })
+    }
+  })
+</script>

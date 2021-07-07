@@ -1,0 +1,188 @@
+<form
+  class="layui-form"
+  lay-filter="layuiadmin-app-form-list"
+  id="layuiadmin-app-form-list"
+  style="padding: 20px 30px 0 0;"
+>
+  <div class="layui-form-item">
+    <label class="layui-form-label">角色ID</label>
+    <div class="layui-input-inline">
+      <script type="text/html" template>
+        <input type="number" name="id" value="{{ d.params.id || '' }}" placeholder="请输入角色ID" {{d.params.id != null ? 'disabled' : '' }}  autocomplete="off"
+          class="layui-input {{d.params.id != null ? 'layui-btn-disabled' : '' }}">
+      </script>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">角色名</label>
+    <div class="layui-input-inline">
+      <script type="text/html" template>
+        <input type="text" name="role_name" value="{{ d.params.role_name || '' }}" lay-verify="required"
+          placeholder="请输入角色名" autocomplete="off" class="layui-input">
+      </script>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">标签</label>
+    <div class="layui-input-inline">
+      <script
+        type="text/html"
+        template
+        lay-url="./json/dummy.js"
+        lay-done="layui.sessionData.done(d)"
+      >
+        <select name="label" lay-verify="required">
+          <option value="">请选择标签</option>
+          <option value="管理员" {{ d.params.label === '管理员' ? 'selected' : '' }}>管理员</option>
+          <option value="普通用户" {{ d.params.label === '普通用户' ? 'selected' : '' }}>普通用户</option>
+        </select>
+      </script>
+    </div>
+  </div>
+
+  <script>
+    layui.sessionData.done = (d) => {
+      console.log("---lable---");
+      layui.use(["form"], function () {
+        var form = layui.form;
+        form.render(null, "layuiadmin-app-form-list");
+      });
+    };
+  </script>
+
+  <div id="checkedKey" data></div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">菜单权限</label>
+    <div class="layui-input-block">
+      <script
+        type="text/html"
+        template
+        lay-url="http://36.7.72.89:8102/menu"
+        lay-done="layui.sessionData.auth(d)"
+      >
+        {{#
+          var checked = document.getElementById('checkedKey');
+          checked.setAttribute('data', d.params ? d.params.menu_id : []);
+        }}
+        <div id="LAY-auth-tree-index">{{d.params.menu_id}}</div>
+      </script>
+    </div>
+  </div>
+
+  <script>
+    layui.sessionData.auth = (d) => {
+      var checked = document
+        .getElementById("checkedKey")
+        .getAttribute("data")
+        .split(",");
+      checked = checked.map((c) => parseInt(c));
+
+      layui.use(["authtree"], function () {
+        var authtree = layui.authtree;
+        var trees = authtree.listConvert(d.data, {
+          primaryKey: "id",
+          startPid: 0,
+          parentKey: "parent_id",
+          nameKey: "title",
+          valueKey: "id",
+          checkedKey: checked,
+        });
+
+        authtree.render("#LAY-auth-tree-index", trees, {
+          inputname: "authids[]",
+          layfilter: "lay-check-auth",
+          autowidth: true,
+          theme: "auth-skin-default",
+          themePath: "/src/lib/extend/tree_themes/",
+        });
+        authtree.on("change(lay-check-auth)", function (data) {
+          // 获取所有已选中节点
+          var checked = authtree.getChecked("#LAY-auth-tree-index");
+        });
+        authtree.on("deptChange(lay-check-auth)", function (data) {});
+      });
+    };
+  </script>
+
+  <!-- <div class="layui-form-item">
+    <label class="layui-form-label">权限范围</label>
+    <div class="layui-input-block">
+      <script type="text/html" template lay-url="http://36.7.72.89:8102/menu" lay-done="layui.sessionData.menu(d)">
+        {{#  
+          console.log('--roleform--');
+          var menus = [];
+          if(d.data) {
+            d.data.forEach(m => {
+              if(m.level < 3) {
+                menus.push({id: m.id, title: m.title});
+              }
+            })
+          }
+          console.log(menus);
+        }}
+        {{#  layui.each(menus, function(index, item){ }}
+        <input type="checkbox" name="menus-{{item.title}}-{{item.id}}" lay-skin="primary" title={{item.title}}
+          {{ (d.params.menu && d.params.menu.indexOf(item.title) != -1) ? 'checked' : '' }}>
+        {{#  }); }}
+        {{#  if(menus == null){ }}
+        <input type="checkbox" name="limits[]" lay-skin="primary" title="url获取">
+        {{#  } }}
+        {{#  if(menus && menus.length === 0){ }}
+        <input type="checkbox" name="limits[]" lay-skin="primary" title="">
+        {{#  } }}
+
+      </script>
+    </div>
+  </div> -->
+
+  <script>
+    layui.sessionData.menu = (d) => {
+      console.log("roleform");
+      layui.use(["form"], function () {
+        var form = layui.form;
+        form.render(null, "layuiadmin-app-form-list"); //渲染该模板下的动态表单
+      });
+    };
+  </script>
+
+  <div class="layui-form-item">
+    <label class="layui-form-label">角色描述</label>
+    <div class="layui-input-inline">
+      <script type="text/html" template>
+        <textarea name="desc" lay-verify="required" style="width: 400px; height: 150px;" autocomplete="off"
+          class="layui-textarea">
+            {{ d.params.desc || '' }}
+          </textarea>
+      </script>
+    </div>
+  </div>
+
+  <div class="layui-form-item">
+    <label class="layui-form-label">发布状态</label>
+    <div class="layui-input-inline">
+      <input
+        type="checkbox"
+        lay-verify="required"
+        lay-filter="status"
+        name="status"
+        lay-skin="switch"
+        lay-text="已启用|待启用"
+      />
+    </div>
+  </div>
+  <!-- <script type="text/html" template>
+    <input type="hidden" name="Authorization" value="{{ '' }}">
+  </script> -->
+  <div class="layui-form-item">
+    <label class="layui-form-label"></label>
+    <div class="layui-input-inline">
+      <input
+        type="button"
+        lay-submit
+        lay-filter="layuiadmin-app-form-submit"
+        value="确认"
+        class="layui-btn"
+      />
+    </div>
+  </div>
+</form>

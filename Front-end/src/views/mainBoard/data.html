@@ -1,0 +1,451 @@
+<div id="mapDiv">
+</div>
+
+<style>
+  html,
+  body,
+  #mapDiv {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+  }
+
+  body {
+    background-color: #FFF;
+    overflow: hidden;
+    font-family: "Trebuchet MS";
+  }
+</style>
+
+<script>
+
+  require(["esri/map",
+    "esri/layers/GeoJSONLayer",
+    "esri/views/MapView",
+    "esri/views/SceneView",
+    "esri/layers/GroupLayer",
+    "esri/widgets/LayerList",
+    "esri/widgets/BasemapToggle",
+    "esri/widgets/BasemapGallery",
+    "esri/widgets/Search"
+  ], function (Map, GeoJSONLayer, MapView, SceneView, GroupLayer, LayerList, BasemapToggle, BasemapGallery, Search) {
+
+    const url_Watershed_ChaoLake = "json/ChaoLakeNPS/Chaohu_Watershed_v01.json";
+    const url_Watershed_ChaoLake_SecondaryProtectedZone = "json/ChaoLakeNPS/Chaohu_SecondaryProtectedZone_v01.json";
+    const url_Watershed_ChaoLake_FirstLevelProtectedZone = "json/ChaoLakeNPS/Chaohu_FirstLevelProtectedZone_v01.json";
+
+    const url_Catchment_BiguiyuanNan = "json/ChaoLakeNPS/BiguiyuanNan_Catchment_v01.json";
+    const url_Catchment_Shijidadao = "json/ChaoLakeNPS/Shijidadao_Catchment_v01.json";
+    const url_Catchment_Hangbu = "json/ChaoLakeNPS/Hangbu_Catchment_v01.json";
+
+    const url_WeatherMonitoring = "json/ChaoLakeNPS/Chaohu_WeatherMonitoringPoints_v01.json";
+    const url_RainMonitoring = "json/ChaoLakeNPS/Chaohu_RainMonitoringPoints_v01.json";
+    const url_SewageMonitoring = "json/ChaoLakeNPS/Chaohu_SewageMonitoringPoints_v01.json";
+    const url_WaterMonitoring = "json/ChaoLakeNPS/Chaohu_WaterMonitoringPoints_v01.json";
+
+
+    const template_Watershed_ChaoLake = {
+      title: "<b>巢湖流域区位信息：</b>",
+      content: "<b>巢湖流域面积: </b> {Area} km^2 <br><b>其它有效信息: </b> 巢湖流域是长江流域中具有战略地缘意义的区域 <br>",
+      actions: [],
+      overwriteActions: true,
+      opacity: .6
+    };
+
+    const template_Watershed_ChaoLake_SecondaryProtectedZone = {
+      title: "<b>巢湖流域水环境二级保护区区位信息：</b>",
+      content: "<b>区域面积: </b> {Area} km^2 <br><b>其它有效信息: </b>  <br>",
+      actions: [],
+      overwriteActions: true,
+      opacity: .6
+    };
+
+    const template_Watershed_ChaoLake_FirstLevelProtectedZone = {
+      title: "<b>巢湖流域水环境一级保护区区位信息：</b>",
+      content: "<b>区域面积: </b> {Area} km^2 <br><b>其它有效信息: </b>  <br>",
+      actions: [],
+      overwriteActions: true,
+      opacity: .6
+    };
+
+    const template_Catchment_BiguiyuanNan = {
+      title: "<b>南岸碧桂园区域信息：</b>",
+      content: "<b>区域面积: </b> {Area} km^2 <br><b>其它有效信息: </b>  <br>",
+      actions: [],
+      overwriteActions: true,
+      opacity: .6
+    };
+
+    const template_Catchment_Shijidadao = {
+      title: "<b>巢湖市区世纪大道区域信息：</b>",
+      content: "<b>区域面积: </b> {Area} km^2 <br><b>其它有效信息: </b>  <br>",
+      actions: [],
+      overwriteActions: true,
+      opacity: .6
+    };
+    const template_Catchment_Hangbu = {
+      title: "<b>舒城市杭埠镇区域信息：</b>",
+      content: "<b>区域面积: </b> {Area} km^2 <br><b>其它有效信息: </b>  <br>",
+      actions: [],
+      overwriteActions: true,
+      opacity: .6
+    };
+
+    const template_WeatherMonitoring = {
+      title: "<b>监测点信息：</b>",
+      content: "<b>名称: </b> {Name} <br>\
+                <b>对应点位模型编号: </b> {WeatherMeterName} <br>\
+                <b>对应点位仪表ID编号: </b> {WeatherStationID} <br>\
+      ",
+      actions: [],
+      overwriteActions: true,
+      opacity: .6
+    };
+
+    const template_RainMonitoring = {
+      title: "<b>监测点信息：</b>",
+      content: "<b>名称: </b> {Name} <br>\
+                <b>对应点位模型编号: </b> {MSOutletNode} <br>\
+                <b>对应点位物探编号: </b> {GPOutletNode} <br>\
+                <b>对应点位水质仪表ID编号: </b> {WaterQualityDeviceID} <br>\
+                <b>对应点位水量仪表ID编号: </b> {WaterQuantityDeviceID} <br>\
+      ",
+      actions: [],
+      overwriteActions: true,
+      opacity: .6
+    };
+
+    const template_SewageMonitoring = {
+      title: "<b>监测点信息：</b>",
+      content: "<b>名称: </b> {Name} <br>\
+                <b>对应点位模型编号: </b> {MSOutletNode} <br>\
+                <b>对应点位物探编号: </b> {GPOutletNode} <br>\
+                <b>对应点位水质仪表ID编号: </b> {WaterQualityDeviceID} <br>\
+                <b>对应点位水量仪表ID编号: </b> {WaterQuantityDeviceID} <br>\
+      ",
+      actions: [],
+      overwriteActions: true,
+      opacity: .6
+    };
+
+    const template_WaterMonitoring = {
+      title: "<b>监测点信息：</b>",
+      content: "<b>名称: </b> {Name} <br>\
+                <b>对应点位模型编号: </b> {MSOutletNode} <br>\
+                <b>对应点位物探编号: </b> {GPOutletNode} <br>\
+                <b>对应点位水质仪表ID编号: </b> {WaterQualityDeviceID} <br>\
+                <b>对应点位水量仪表ID编号: </b> {WaterQuantityDeviceID} <br>\
+      ",
+      actions: [],
+      overwriteActions: true,
+      opacity: .6
+    };
+
+    const renderer_Watershed_ChaoLake = {
+      type: "simple",
+      symbol: {
+        type: "line-3d",
+        symbolLayers: [
+          {
+            type: "line",
+            size: 1.0,  // points
+            material: { color: "black" },
+            cap: "round",
+            join: "round"
+          }
+        ]
+      }
+    };
+
+    const renderer_Watershed_ChaoLake_SecondaryProtectedZone = {
+      type: "simple",
+      symbol: {
+        type: "line-3d",
+        symbolLayers: [
+          {
+            type: "line",
+            size: 2.0,  // points
+            material: { color: "blue" },
+            cap: "round",
+            join: "round"
+          }
+        ]
+      }
+    };
+
+    const renderer_Watershed_ChaoLake_FirstLevelProtectedZone = {
+      type: "simple",
+      symbol: {
+        type: "line-3d",
+        symbolLayers: [
+          {
+            type: "line",
+            size: 3.0,  // points
+            material: { color: "green" },
+            cap: "round",
+            join: "round"
+          }
+        ]
+      }
+    };
+
+    const renderer_Catchment_BiguiyuanNan = {
+      type: "simple",
+      symbol: {
+        type: "line-3d",
+        symbolLayers: [
+          {
+            type: "line",
+            size: 4.0,  // points
+            material: { color: "red" },
+            cap: "round",
+            join: "round"
+          }
+        ]
+      }
+    };
+
+    const renderer_Catchment_Shijidadao = {
+      type: "simple",
+      symbol: {
+        type: "line-3d",
+        symbolLayers: [
+          {
+            type: "line",
+            size: 4.0,  // points
+            material: { color: "red" },
+            cap: "round",
+            join: "round"
+          }
+        ]
+      }
+    };
+
+    const renderer_Catchment_Hangbu = {
+      type: "simple",
+      symbol: {
+        type: "line-3d",
+        symbolLayers: [
+          {
+            type: "line",
+            size: 4.0,  // points
+            material: { color: "red" },
+            cap: "round",
+            join: "round"
+          }
+        ]
+      }
+    };
+
+    const renderer_WeatherMonitoring = {
+      type: "simple",
+      symbol: {
+        type: "picture-marker", // autocasts as new PictureMarkerSymbol()
+        url: "src/style/res/RainGage.svg",
+        width: "40px",
+        height: "40px"
+      }
+    };
+
+    const renderer_RainMonitoring = {
+      type: "simple",
+      symbol: {
+        type: "picture-marker", // autocasts as new PictureMarkerSymbol()
+        url: "src/style/res/Rain.svg",
+        width: "40px",
+        height: "40px"
+      }
+    };
+
+    const renderer_SewageMonitoring = {
+      type: "simple",
+      symbol: {
+        type: "picture-marker", // autocasts as new PictureMarkerSymbol()
+        url: "src/style/res/Sewage.svg",
+        width: "40px",
+        height: "40px"
+      }
+    };
+
+    const renderer_WaterMonitoring = {
+      type: "simple",
+      symbol: {
+        type: "picture-marker", // autocasts as new PictureMarkerSymbol()
+        url: "src/style/res/Water.svg",
+        width: "40px",
+        height: "40px"
+      }
+    };
+
+    const geojsonLayer_Watershed_ChaoLake = new GeoJSONLayer({
+      url: url_Watershed_ChaoLake,
+      title: "巢湖流域边界",
+      popupTemplate: template_Watershed_ChaoLake,
+      renderer: renderer_Watershed_ChaoLake,
+      opacity: .9
+    });
+
+    const geojsonLayer_Watershed_ChaoLake_SecondaryProtectedZone = new GeoJSONLayer({
+      url: url_Watershed_ChaoLake_SecondaryProtectedZone,
+      title: "巢湖流域二级保护区边界",
+      popupTemplate: template_Watershed_ChaoLake_SecondaryProtectedZone,
+      renderer: renderer_Watershed_ChaoLake_SecondaryProtectedZone,
+      opacity: .9
+    });
+
+    const geojsonLayer_Watershed_ChaoLake_FirstLevelProtectedZone = new GeoJSONLayer({
+      url: url_Watershed_ChaoLake_FirstLevelProtectedZone,
+      title: "巢湖流域一级保护区边界",
+      popupTemplate: template_Watershed_ChaoLake_FirstLevelProtectedZone,
+      renderer: renderer_Watershed_ChaoLake_FirstLevelProtectedZone,
+      opacity: .9
+    });
+
+    const geojsonLayer_Catchment_BiguiyuanNan = new GeoJSONLayer({
+      url: url_Catchment_BiguiyuanNan,
+      title: "南岸碧桂园区域边界",
+      popupTemplate: template_Catchment_BiguiyuanNan,
+      renderer: renderer_Catchment_BiguiyuanNan,
+      opacity: .9
+    });
+
+    const geojsonLayer_Catchment_Shijidadao = new GeoJSONLayer({
+      url: url_Catchment_Shijidadao,
+      title: "巢湖市区世纪大道区域边界",
+      popupTemplate: template_Catchment_Shijidadao,
+      renderer: renderer_Catchment_Shijidadao,
+      opacity: .9
+    });
+
+    const geojsonLayer_Catchment_Hangbu = new GeoJSONLayer({
+      url: url_Catchment_Hangbu,
+      title: "舒城市杭埠镇区域边界",
+      popupTemplate: template_Catchment_Hangbu,
+      renderer: renderer_Catchment_Hangbu,
+      opacity: .9
+    });
+
+    const geojsonLayer_WeatherMonitoring = new GeoJSONLayer({
+      url: url_WeatherMonitoring,
+      title: "气象监测",
+      popupTemplate: template_WeatherMonitoring,
+      renderer: renderer_WeatherMonitoring,
+      opacity: 1
+    });
+
+    const geojsonLayer_RainMonitoring = new GeoJSONLayer({
+      url: url_RainMonitoring,
+      title: "雨水监测",
+      popupTemplate: template_RainMonitoring,
+      renderer: renderer_RainMonitoring,
+      opacity: 1
+    });
+
+    const geojsonLayer_SewageMonitoring = new GeoJSONLayer({
+      url: url_SewageMonitoring,
+      title: "污水监测",
+      popupTemplate: template_SewageMonitoring,
+      renderer: renderer_SewageMonitoring,
+      opacity: 1
+    });
+
+    const geojsonLayer_WaterMonitoring = new GeoJSONLayer({
+      url: url_WaterMonitoring,
+      title: "供水监测",
+      popupTemplate: template_WaterMonitoring,
+      renderer: renderer_WaterMonitoring,
+      opacity: 1
+    });
+
+    var CatchmentGroupLayer = new GroupLayer({
+        title: "区域信息",
+        visible: true,
+        visibilityMode: "independent",
+        layers: [
+        geojsonLayer_Catchment_Hangbu,
+          geojsonLayer_Catchment_Shijidadao,
+          geojsonLayer_Catchment_BiguiyuanNan,
+          geojsonLayer_Watershed_ChaoLake_FirstLevelProtectedZone,
+          geojsonLayer_Watershed_ChaoLake_SecondaryProtectedZone,
+          geojsonLayer_Watershed_ChaoLake,
+        ],
+        opacity: 1
+      });
+
+    var MonitoringGroupLayer = new GroupLayer({
+        title: "监测站点",
+        visible: true,
+        visibilityMode: "independent",
+        layers: [
+          geojsonLayer_WaterMonitoring,
+          geojsonLayer_SewageMonitoring,
+          geojsonLayer_RainMonitoring,
+          geojsonLayer_WeatherMonitoring
+        ],
+        opacity: 1
+      });
+
+
+    var map = new Map({
+      basemap: "topo-vector",
+      // basemap: "dark-gray",
+      // basemap: "gray-vector",
+      // basemap: "oceans",
+      ground: "world-elevation",
+      layers: [
+              MonitoringGroupLayer,
+              CatchmentGroupLayer
+              ]
+    });
+
+    var view = new SceneView({
+      container: "mapDiv",
+      map: map,
+      popup: {
+        dockEnabled: true,
+
+        dockOptions: {
+          // Disables the dock button from the popup
+          buttonEnabled: false,
+          // Ignore the default sizes that trigger responsive docking
+          breakpoint: false,
+          position: 'top-right'
+        }
+      },
+      camera: {
+        position: {  // observation point
+          x: 117.55,
+          y: 31.56,
+          z: 100000 // altitude in meters
+        },
+        tilt: 0  // perspective in degrees
+      }
+    });
+
+    var basemapToggle = new BasemapToggle({
+      view: view,
+      nextBasemap: "satellite"
+    });
+
+    var searchWidget = new Search({
+      view: view
+    });
+
+    view.ui.add(basemapToggle, "top-left");
+    // Add the search widget to the top right corner of the view
+    view.ui.add(searchWidget, {
+      position: "bottom-left"
+    });
+
+    view.when(function() {
+          var layerList = new LayerList({
+            view: view
+          });
+
+          // Add widget to the top right corner of the view
+          view.ui.add(layerList, "top-right");
+        });
+
+  });
+</script>

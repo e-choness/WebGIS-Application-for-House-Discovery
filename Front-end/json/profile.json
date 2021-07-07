@@ -1,0 +1,21 @@
+{
+  "id": 10,
+  "username": "user",
+  "permission": [
+    "''",
+    "role:view",
+    "role:add",
+    "role:edit",
+    "role:delete",
+    "user:view",
+    "user:add",
+    "user:edit",
+    "user:delete",
+    "menu:view",
+    "menu:add",
+    "menu:edit",
+    "menu:delete",
+    "system:website",
+    "chaohu"
+  ]
+}
